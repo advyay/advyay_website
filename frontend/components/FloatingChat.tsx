@@ -32,7 +32,7 @@ export default function FloatingChat() {
     setTimeout(() => {
       const aiMessage: Message = {
         role: 'ai',
-        content: 'I\'m still being built, see you soon'
+        content: "I'm still being built. Enterprise intelligence coming soon."
       }
       setMessages(prev => [...prev, aiMessage])
       setLoading(false)
@@ -42,43 +42,46 @@ export default function FloatingChat() {
   return (
     <div className="fixed bottom-8 right-8 z-50 flex flex-col items-end">
 
-      {/* Floating Button */}
-     <motion.button
-  onClick={() => setOpen(!open)}
-  whileHover={{ scale: 1.08 }}
-  whileTap={{ scale: 0.95 }}
-  className="relative w-16 h-16 rounded-full flex items-center justify-center
-             bg-gradient-to-r from-blue-500 to-purple-600
-             shadow-[0_0_40px_rgba(139,92,246,0.6)]
-             overflow-hidden"
->
-  {/* Breathing Glow Layer */}
-  <motion.span
-    animate={{ scale: [1, 1.25, 1] }}
-    transition={{ duration: 2.5, repeat: Infinity }}
-    className="absolute inset-0 rounded-full
-               bg-gradient-to-r from-blue-500 to-purple-600
-               opacity-30 blur-xl"
-  />
+      {/* Floating Button (TypeScript Safe) */}
+      <motion.div
+        whileHover={{ scale: 1.08 }}
+        whileTap={{ scale: 0.95 }}
+      >
+        <button
+          onClick={() => setOpen(!open)}
+          className="relative w-16 h-16 rounded-full flex items-center justify-center
+                     bg-gradient-to-r from-blue-500 to-purple-600
+                     shadow-[0_0_40px_rgba(139,92,246,0.6)]
+                     overflow-hidden"
+        >
+          {/* Animated Glow */}
+          <motion.span
+            animate={{ scale: [1, 1.25, 1] }}
+            transition={{ duration: 2.5, repeat: Infinity }}
+            className="absolute inset-0 rounded-full
+                       bg-gradient-to-r from-blue-500 to-purple-600
+                       opacity-30 blur-xl"
+          />
 
-  {/* Subtle Ring */}
-  <span className="absolute inset-0 rounded-full border border-white/20"></span>
+          {/* Subtle Ring */}
+          <span className="absolute inset-0 rounded-full border border-white/20" />
 
-  {/* Chat Icon */}
-  <svg
-    className="relative z-10"
-    width="26"
-    height="26"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="white"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
-    <path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z" />
-  </svg>
-</motion.button>
+          {/* Chat Icon */}
+          <svg
+            className="relative z-10"
+            width="26"
+            height="26"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="white"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z" />
+          </svg>
+        </button>
+      </motion.div>
 
       <AnimatePresence>
         {open && (
@@ -122,7 +125,6 @@ export default function FloatingChat() {
                 </div>
               ))}
 
-              {/* Typing Indicator */}
               {loading && (
                 <div className="bg-gray-800 px-3 py-2 rounded-xl text-sm self-start animate-pulse">
                   AI is thinking...
@@ -132,7 +134,7 @@ export default function FloatingChat() {
               <div ref={bottomRef} />
             </div>
 
-            {/* Input Area */}
+            {/* Input */}
             <div className="p-4 flex gap-3 border-t border-white/10 bg-white/5">
               <input
                 className="flex-1 bg-[#0F172A] p-3 rounded-lg text-sm outline-none border border-white/10 focus:border-purple-500 transition"
