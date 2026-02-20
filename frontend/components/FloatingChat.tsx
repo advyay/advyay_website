@@ -28,7 +28,6 @@ export default function FloatingChat() {
     setInput('')
     setLoading(true)
 
-    // Simulated AI response
     setTimeout(() => {
       const aiMessage: Message = {
         role: 'ai',
@@ -42,10 +41,11 @@ export default function FloatingChat() {
   return (
     <div className="fixed bottom-8 right-8 z-50 flex flex-col items-end">
 
-      {/* Floating Button (TypeScript Safe) */}
+      {/* Floating Button */}
       <motion.div
         whileHover={{ scale: 1.08 }}
         whileTap={{ scale: 0.95 }}
+        className="relative"
       >
         <button
           onClick={() => setOpen(!open)}
@@ -54,19 +54,19 @@ export default function FloatingChat() {
                      shadow-[0_0_40px_rgba(139,92,246,0.6)]
                      overflow-hidden"
         >
-          {/* Animated Glow */}
-          <motion.span
+          {/* Animated Glow Wrapper */}
+          <motion.div
             animate={{ scale: [1, 1.25, 1] }}
             transition={{ duration: 2.5, repeat: Infinity }}
-            className="absolute inset-0 rounded-full
-                       bg-gradient-to-r from-blue-500 to-purple-600
-                       opacity-30 blur-xl"
-          />
+            className="absolute inset-0 flex items-center justify-center"
+          >
+            <div className="w-full h-full rounded-full
+                            bg-gradient-to-r from-blue-500 to-purple-600
+                            opacity-30 blur-xl" />
+          </motion.div>
 
-          {/* Subtle Ring */}
           <span className="absolute inset-0 rounded-full border border-white/20" />
 
-          {/* Chat Icon */}
           <svg
             className="relative z-10"
             width="26"
@@ -111,7 +111,6 @@ export default function FloatingChat() {
 
             {/* Messages */}
             <div className="flex-1 p-4 overflow-y-auto space-y-4 flex flex-col">
-
               {messages.map((m, i) => (
                 <div
                   key={i}
