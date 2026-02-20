@@ -31,7 +31,8 @@ export default function FloatingChat() {
     setTimeout(() => {
       const aiMessage: Message = {
         role: 'ai',
-        content: "I'm still being built. Enterprise intelligence coming soon."
+        content:
+          "I'm still being built. Enterprise intelligence coming soon."
       }
       setMessages(prev => [...prev, aiMessage])
       setLoading(false)
@@ -39,38 +40,37 @@ export default function FloatingChat() {
   }
 
   return (
-    <div className="fixed bottom-8 right-8 z-50 flex flex-col items-end">
+    <div className="fixed bottom-4 right-4 sm:bottom-8 sm:right-8 z-[100] flex flex-col items-end">
 
       {/* Floating Button */}
       <motion.div
         whileHover={{ scale: 1.08 }}
         whileTap={{ scale: 0.95 }}
-        className="relative"
       >
         <button
           onClick={() => setOpen(!open)}
-          className="relative w-16 h-16 rounded-full flex items-center justify-center
+          className="relative w-14 h-14 sm:w-16 sm:h-16
+                     rounded-full flex items-center justify-center
                      bg-gradient-to-r from-blue-500 to-purple-600
                      shadow-[0_0_40px_rgba(139,92,246,0.6)]
                      overflow-hidden"
         >
-          {/* Animated Glow Wrapper */}
+          {/* Glow animation */}
           <motion.div
             animate={{ scale: [1, 1.25, 1] }}
             transition={{ duration: 2.5, repeat: Infinity }}
-            className="absolute inset-0 flex items-center justify-center"
-          >
-            <div className="w-full h-full rounded-full
-                            bg-gradient-to-r from-blue-500 to-purple-600
-                            opacity-30 blur-xl" />
-          </motion.div>
+            className="absolute inset-0 rounded-full
+                       bg-gradient-to-r from-blue-500 to-purple-600
+                       opacity-30 blur-xl"
+          />
 
           <span className="absolute inset-0 rounded-full border border-white/20" />
 
+          {/* Chat Icon */}
           <svg
             className="relative z-10"
-            width="26"
-            height="26"
+            width="22"
+            height="22"
             viewBox="0 0 24 24"
             fill="none"
             stroke="white"
@@ -90,18 +90,23 @@ export default function FloatingChat() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ duration: 0.25 }}
-            className="mt-4 w-96 h-[520px] 
-                       bg-gradient-to-b from-[#0B1220]/95 to-[#070B14]/95 
-                       backdrop-blur-2xl 
-                       border border-white/10 
-                       shadow-[0_0_60px_rgba(59,130,246,0.25)] 
-                       rounded-2xl 
-                       flex flex-col overflow-hidden"
+            className="
+              mt-4
+              w-[95vw] sm:w-96
+              h-[75vh] sm:h-[520px]
+              max-w-[420px]
+              bg-gradient-to-b from-[#0B1220]/95 to-[#070B14]/95
+              backdrop-blur-2xl
+              border border-white/10
+              shadow-[0_0_60px_rgba(59,130,246,0.25)]
+              rounded-2xl
+              flex flex-col
+              overflow-hidden
+            "
           >
-
             {/* Header */}
             <div className="p-4 border-b border-white/10 bg-white/5">
-              <h3 className="font-semibold text-lg">
+              <h3 className="font-semibold text-base">
                 Anvay AI Assistant
               </h3>
               <p className="text-xs text-gray-400">
@@ -114,7 +119,7 @@ export default function FloatingChat() {
               {messages.map((m, i) => (
                 <div
                   key={i}
-                  className={`p-3 rounded-xl text-sm max-w-[75%] ${
+                  className={`p-3 rounded-xl text-sm max-w-[80%] ${
                     m.role === 'user'
                       ? 'bg-gradient-to-r from-blue-600 to-purple-600 self-end text-white'
                       : 'bg-gray-800 self-start text-gray-200'
@@ -134,9 +139,9 @@ export default function FloatingChat() {
             </div>
 
             {/* Input */}
-            <div className="p-4 flex gap-3 border-t border-white/10 bg-white/5">
+            <div className="p-3 sm:p-4 flex gap-2 border-t border-white/10 bg-white/5">
               <input
-                className="flex-1 bg-[#0F172A] p-3 rounded-lg text-sm outline-none border border-white/10 focus:border-purple-500 transition"
+                className="flex-1 bg-[#0F172A] p-2 sm:p-3 rounded-lg text-sm outline-none border border-white/10 focus:border-purple-500 transition"
                 placeholder="Ask about agentic systems..."
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
@@ -150,7 +155,6 @@ export default function FloatingChat() {
                 Send
               </button>
             </div>
-
           </motion.div>
         )}
       </AnimatePresence>
