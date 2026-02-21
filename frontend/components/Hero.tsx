@@ -1,116 +1,107 @@
 'use client'
 
-import dynamic from 'next/dynamic'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 
-const NeuralBackground = dynamic(
-  () => import('./NeuralBackground'),
-  { ssr: false }
-)
-
 export default function Hero() {
   return (
-    <section className="relative min-h-screen flex items-center justify-center px-6 pt-32 overflow-hidden text-center">
+    <section className="relative min-h-screen flex items-center justify-center px-6 pt-32 pb-24 bg-[#070B14] text-center">
 
-      {/* Neural Background */}
-      <div className="absolute inset-0 -z-20">
-        <NeuralBackground />
-      </div>
+      <div className="max-w-6xl mx-auto space-y-12">
 
-      {/* Cinematic Overlay */}
-      <div className="absolute inset-0 -z-10 bg-gradient-to-b from-[#070B14]/40 via-[#070B14]/85 to-[#070B14]" />
-
-      <div className="max-w-6xl space-y-14">
-
-        {/* Category Signal */}
+        {/* Identity */}
         <motion.p
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
           className="uppercase tracking-[0.35em] text-xs text-blue-400"
         >
           ADVYAY SOLUTIONS PVT. LTD.
         </motion.p>
 
-        {/* Main Headline */}
+        {/* Headline */}
         <motion.h1
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="text-5xl md:text-7xl lg:text-[5.5rem] font-bold leading-[1.05]"
+          className="text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.1]"
         >
+          AI Systems That Operate
+          <br />
           <span className="bg-gradient-to-r from-white via-blue-400 to-purple-500 bg-clip-text text-transparent">
-            The Autonomous
-          </span>
-          <span className="block text-white">
-            Enterprise Layer
+            Inside Enterprise Workflows
           </span>
         </motion.h1>
 
-        {/* Power Subheading */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1 }}
-          className="max-w-4xl mx-auto space-y-6"
-        >
-          <p className="text-xl md:text-2xl text-gray-300 leading-relaxed">
-            We architect persistent multi-agent AI systems that replace
-            human-dependent workflows with self-operating intelligence.
+        {/* Clear Value Statement */}
+        <div className="max-w-4xl mx-auto space-y-6">
+
+          <p className="text-xl text-gray-300 leading-relaxed">
+            We build and deploy production-grade Agentic AI systems that
+            automate sales conversations, lead qualification, CRM workflows,
+            and internal knowledge operations.
           </p>
 
           <p className="text-lg text-gray-400 leading-relaxed">
-            Sales, voice communication, negotiation, knowledge reasoning —
-            orchestrated through structured memory, Graph-RAG infrastructure,
-            and enterprise governance layers.
+            Advyay operates through:
           </p>
-        </motion.div>
 
-        {/* Authority Signals */}
-        <div className="flex flex-wrap justify-center gap-4 text-sm text-gray-400 pt-4">
+          <div className="text-lg text-gray-300 space-y-2">
+            <p>
+              <span className="text-white font-semibold">ANVAY</span> — 
+              an AI-native CRM platform with embedded autonomous agents
+            </p>
+            <p>
+              <span className="text-white font-semibold">Enterprise AI Implementation</span> — 
+              custom voice agents, workflow automation, and AI integration
+              into existing CRM / ERP systems
+            </p>
+          </div>
 
-          <span className="px-5 py-2 border border-white/10 rounded-full backdrop-blur">
-            Multi-Agent Orchestration
+        </div>
+
+        {/* Outcome Indicators */}
+        <div className="flex flex-wrap justify-center gap-6 pt-4 text-sm text-gray-400">
+
+          <span className="px-5 py-2 border border-white/10 rounded-full">
+            24/7 AI Voice Agents
           </span>
 
-          <span className="px-5 py-2 border border-white/10 rounded-full backdrop-blur">
-            Persistent Graph Memory
+          <span className="px-5 py-2 border border-white/10 rounded-full">
+            CRM-Integrated Automation
           </span>
 
-          <span className="px-5 py-2 border border-white/10 rounded-full backdrop-blur">
-            Autonomous Voice Infrastructure
+          <span className="px-5 py-2 border border-white/10 rounded-full">
+            Structured Memory & Audit Trails
           </span>
 
-          <span className="px-5 py-2 border border-white/10 rounded-full backdrop-blur">
-            Enterprise Governance & Audit
+          <span className="px-5 py-2 border border-white/10 rounded-full">
+            Measurable ROI from Pilot to Scale
           </span>
 
         </div>
 
         {/* CTA */}
-        <div className="flex flex-col md:flex-row gap-6 justify-center pt-12">
+        <div className="flex flex-col md:flex-row gap-6 justify-center pt-10">
 
           <Link
-            href="/enterprise"
-            className="bg-gradient-to-r from-blue-600 to-purple-600 px-12 py-5 rounded-xl font-semibold text-lg hover:opacity-90 transition shadow-[0_0_50px_rgba(88,101,242,0.5)]"
+            href="/platform"
+            className="bg-gradient-to-r from-blue-600 to-purple-600 px-12 py-5 rounded-xl font-semibold text-lg hover:opacity-90 transition"
           >
-            Deploy Autonomous Infrastructure
+            Explore ANVAY Platform
           </Link>
 
           <Link
-            href="/technology"
+            href="/contact"
             className="border border-white/20 px-12 py-5 rounded-xl text-lg hover:bg-white/10 transition"
           >
-            Explore Architecture
+            Discuss Enterprise Deployment
           </Link>
 
         </div>
 
-        {/* Inevitable Statement */}
+        {/* Subtle Positioning */}
         <p className="text-gray-500 text-sm pt-10 max-w-3xl mx-auto">
-          The next generation of enterprises will not scale by hiring.
-          They will scale by deploying autonomous systems.
+          We don’t build demo AI. We deploy governed, production-ready systems
+          inside real enterprise operations.
         </p>
 
       </div>

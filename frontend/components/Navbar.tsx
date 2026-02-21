@@ -5,25 +5,14 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 
-const links = [
-  { name: 'Home', href: '/' },
-  { name: 'Solutions', href: '/solutions' },
-  { name: 'Platform', href: '/platform' },
-  { name: 'AI Agents', href: '/ai-agents' },
-  { name: 'Technology', href: '/technology' },
-  { name: 'About', href: '/about' },
-  { name: 'Contact', href: '/contact' }
-]
-
 export default function Navbar() {
   const [open, setOpen] = useState(false)
+  const [solutionsOpen, setSolutionsOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const pathname = usePathname()
 
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 40)
-    }
+    const handleScroll = () => setScrolled(window.scrollY > 40)
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
@@ -40,67 +29,119 @@ export default function Navbar() {
         animate={{ y: 0 }}
         className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
           scrolled
-            ? 'bg-black/80 backdrop-blur-2xl border-b border-white/10'
+            ? 'bg-[#070B14]/90 backdrop-blur-2xl border-b border-white/10'
             : 'bg-transparent'
         }`}
       >
         <div className="max-w-7xl mx-auto px-6 py-5 flex justify-between items-center">
 
           {/* LOGO */}
-          <Link href="/" className="flex items-center gap-3 group">
-            <div className="relative text-xl font-bold tracking-wide text-white">
-              ADVYAY
-              <span className="ml-2 text-[10px] border border-blue-500 text-blue-400 px-2 py-[2px] rounded-full uppercase tracking-widest bg-blue-500/10">
-                Beta
-              </span>
-
-              {/* Subtle Glow */}
-              <div className="absolute inset-0 blur-lg opacity-20 bg-blue-500 group-hover:opacity-40 transition" />
-            </div>
+          <Link href="/" className="text-xl font-semibold tracking-wide text-white">
+            ADVYAY
           </Link>
 
           {/* DESKTOP NAV */}
-          <div className="hidden md:flex gap-10 text-sm uppercase tracking-wider">
-            {links.map(link => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="relative text-gray-300 hover:text-white transition"
-              >
-                {link.name}
-                {pathname === link.href && (
-                  <motion.span
-                    layoutId="activeNav"
-                    className="absolute -bottom-2 left-0 w-full h-[2px] bg-gradient-to-r from-blue-500 to-purple-500"
-                  />
+          <div className="hidden md:flex items-center gap-10 text-sm">
+
+            {/* SOLUTIONS DROPDOWN */}
+            <div
+              className="relative"
+              onMouseEnter={() => setSolutionsOpen(true)}
+              onMouseLeave={() => setSolutionsOpen(false)}
+            >
+              <button className="text-gray-300 hover:text-white transition flex items-center gap-2">
+                Solutions
+                <span className="text-xs">▾</span>
+              </button>
+
+              <AnimatePresence>
+                {solutionsOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 10 }}
+                    className="absolute top-10 left-0 w-72 bg-[#0B1220] border border-white/10 rounded-xl p-6 shadow-xl"
+                  >
+                    <div className="space-y-4 text-sm">
+                      <Link href="/voiceAgentsDemoCards" className="block text-gray-300 hover:text-white">
+                        Enterprise Voice Agents
+                      </Link>
+                      <Link href="/solutions" className="block text-gray-300 hover:text-white">
+                        Custom Agentic AI Systems
+                      </Link>
+                      <Link href="/platform" className="block text-gray-300 hover:text-white">
+                        ANVAY Agentic CRM
+                      </Link>
+                    </div>
+                  </motion.div>
                 )}
-              </Link>
-            ))}
+              </AnimatePresence>
+            </div>
+
+            <Link
+              href="/platform"
+              className={`transition ${
+                pathname === '/platform'
+                  ? 'text-white'
+                  : 'text-gray-300 hover:text-white'
+              }`}
+            >
+              Platform
+            </Link>
+
+            <Link
+              href="/ai-agents"
+              className={`transition ${
+                pathname === '/ai-agents'
+                  ? 'text-white'
+                  : 'text-gray-300 hover:text-white'
+              }`}
+            >
+              AI Agents
+            </Link>
+
+            <Link
+              href="/about"
+              className={`transition ${
+                pathname === '/about'
+                  ? 'text-white'
+                  : 'text-gray-300 hover:text-white'
+              }`}
+            >
+              About
+            </Link>
+
+            <Link
+              href="/contact"
+              className={`transition ${
+                pathname === '/contact'
+                  ? 'text-white'
+                  : 'text-gray-300 hover:text-white'
+              }`}
+            >
+              Contact
+            </Link>
+
+            {/* STRONG CTA */}
+            <Link
+              href="/contact"
+              className="ml-4 bg-gradient-to-r from-blue-600 to-purple-600 px-6 py-2 rounded-lg text-white font-medium hover:opacity-90 transition"
+            >
+              Schedule Consultation
+            </Link>
           </div>
 
-          {/* HAMBURGER */}
+          {/* MOBILE MENU BUTTON */}
           <button
             onClick={() => setOpen(!open)}
-            className="md:hidden relative w-8 h-8 flex items-center justify-center"
+            className="md:hidden text-white text-2xl"
           >
-            <motion.span
-              animate={open ? { rotate: 45, y: 0 } : { rotate: 0, y: -6 }}
-              className="absolute w-6 h-[2px] bg-white"
-            />
-            <motion.span
-              animate={open ? { opacity: 0 } : { opacity: 1 }}
-              className="absolute w-6 h-[2px] bg-white"
-            />
-            <motion.span
-              animate={open ? { rotate: -45, y: 0 } : { rotate: 0, y: 6 }}
-              className="absolute w-6 h-[2px] bg-white"
-            />
+            ☰
           </button>
-
         </div>
       </motion.nav>
 
-      {/* BACKDROP OVERLAY */}
+      {/* MOBILE DRAWER */}
       <AnimatePresence>
         {open && (
           <>
@@ -112,39 +153,30 @@ export default function Navbar() {
               className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40"
             />
 
-            {/* SIDE DRAWER */}
             <motion.div
               initial={{ x: '100%' }}
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'spring', stiffness: 120 }}
               className="fixed top-0 right-0 h-full w-[80%] max-w-sm
-                         bg-[#0B1220]/95 backdrop-blur-2xl
-                         border-l border-white/10
+                         bg-[#0B1220] border-l border-white/10
                          z-50 p-10 flex flex-col gap-8"
             >
-              <div className="mt-20 flex flex-col gap-8 text-xl">
-                {links.map((link, i) => (
-                  <motion.div
-                    key={link.href}
-                    initial={{ opacity: 0, x: 30 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: i * 0.08 }}
-                  >
-                    <Link
-                      href={link.href}
-                      onClick={() => setOpen(false)}
-                      className={`transition ${
-                        pathname === link.href
-                          ? 'text-white'
-                          : 'text-gray-400 hover:text-white'
-                      }`}
-                    >
-                      {link.name}
-                    </Link>
-                  </motion.div>
-                ))}
+              <div className="mt-16 flex flex-col gap-6 text-lg">
+                <Link href="/" onClick={() => setOpen(false)}>Home</Link>
+                <Link href="/platform" onClick={() => setOpen(false)}>Platform</Link>
+                <Link href="/ai-agents" onClick={() => setOpen(false)}>AI Agents</Link>
+                <Link href="/about" onClick={() => setOpen(false)}>About</Link>
+                <Link href="/contact" onClick={() => setOpen(false)}>Contact</Link>
               </div>
+
+              <Link
+                href="/contact"
+                onClick={() => setOpen(false)}
+                className="mt-6 bg-gradient-to-r from-blue-600 to-purple-600 px-6 py-3 rounded-lg text-center"
+              >
+                Schedule Consultation
+              </Link>
             </motion.div>
           </>
         )}
