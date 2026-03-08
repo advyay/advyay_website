@@ -2,11 +2,14 @@
 
 import { useEffect, useState } from "react"
 
+import { API_URL } from "../../../lib/config"
+console.log("Admin API URL:", API_URL)
+
 export default function LeadsList() {
   const [leads, setLeads] = useState<any[]>([])
 
   useEffect(() => {
-    fetch("http://localhost:8000/admin/leads", {
+    fetch(`${API_URL}/admin/leads`, {
       credentials: "include"
     })
       .then(res => res.json())
@@ -46,10 +49,19 @@ export default function LeadsList() {
           </p>
 
           <div className="grid md:grid-cols-4 gap-4 mt-6 text-sm text-gray-400">
-            <div>Industry: {lead.industry || "N/A"}</div>
-            <div>Budget: {lead.budget_range || "Undisclosed"}</div>
             <div>Timeline: {lead.timeline || "Unknown"}</div>
-            <div>Confidence: {lead.confidence_score}%</div>
+            <div>Use Case: {lead.use_case || "General Inquiry"}</div>
+            <div>Role: {lead.role || "N/A"}</div>
+            <div>Decision Maker: {lead.decision_maker ? "Yes" : "No"}</div>
+            <div>Company: {lead.company || "N/A"}</div>
+            <div>Budget Range: {lead.budget_range || "N/A"}</div>
+            <div>Email: {lead.email || "N/A"}</div>
+            <div>Phone: {lead.phone || "N/A"}</div>
+            <div>Intentb Stage: {lead.intent_stage || "N/A"}</div>
+            <div>Readiness Score: {lead.readiness_score || "N/A"}</div>
+            <div>Lead Summary: {lead.lead_summary || "N/A"}</div>
+            <div>Created At: {new Date(lead.created_at).toLocaleString()}</div>
+
           </div>
         </div>
       ))}

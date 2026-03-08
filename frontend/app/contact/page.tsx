@@ -1,6 +1,7 @@
 'use client'
 
 import { useRef } from 'react'
+import LeadForm from '../../components/LeadForm'
 
 export default function Contact() {
   const formRef = useRef<HTMLDivElement>(null)
@@ -76,64 +77,7 @@ export default function Contact() {
 
           </div>
 
-          {/* RIGHT SIDE – Executive Form */}
-          <div
-            ref={formRef}
-            className="p-10 rounded-3xl border border-white/10 bg-gradient-to-b from-[#0F172A]/80 to-[#0B1220]/80 backdrop-blur-xl shadow-[0_0_60px_rgba(59,130,246,0.15)]"
-          >
-
-            <form className="space-y-6">
-
-              <div>
-                <label className="text-sm text-gray-400 block mb-2">
-                  Full Name
-                </label>
-                <input
-                  type="text"
-                  className="w-full bg-[#0F172A] border border-white/10 rounded-xl px-4 py-3 focus:border-purple-500 outline-none transition"
-                />
-              </div>
-
-              <div>
-                <label className="text-sm text-gray-400 block mb-2">
-                  Corporate Email
-                </label>
-                <input
-                  type="email"
-                  className="w-full bg-[#0F172A] border border-white/10 rounded-xl px-4 py-3 focus:border-purple-500 outline-none transition"
-                />
-              </div>
-
-              <div>
-                <label className="text-sm text-gray-400 block mb-2">
-                  Organization
-                </label>
-                <input
-                  type="text"
-                  className="w-full bg-[#0F172A] border border-white/10 rounded-xl px-4 py-3 focus:border-purple-500 outline-none transition"
-                />
-              </div>
-
-              <div>
-                <label className="text-sm text-gray-400 block mb-2">
-                  Primary Objective
-                </label>
-                <textarea
-                  rows={4}
-                  className="w-full bg-[#0F172A] border border-white/10 rounded-xl px-4 py-3 focus:border-purple-500 outline-none transition"
-                />
-              </div>
-
-              <button
-                type="submit"
-                className="w-full mt-4 bg-gradient-to-r from-blue-600 to-purple-600 py-4 rounded-xl font-semibold shadow-[0_0_40px_rgba(88,101,242,0.4)] hover:opacity-90 transition"
-              >
-                Submit Executive Request
-              </button>
-
-            </form>
-
-          </div>
+          <div> <LeadForm></LeadForm></div>
 
         </div>
 

@@ -4,16 +4,12 @@ from app.core.config import get_settings
 from app.routes.context import vector_search
 
 import httpx
-import logging
 import json
 import re
 from datetime import datetime
 
 router = APIRouter()
 settings = get_settings()
-
-logger = logging.getLogger("deal_engine")
-logger.setLevel(logging.INFO)
 
 OPENROUTER_API_KEY = settings.OPENROUTER_API_KEY
 OPENROUTER_URL = settings.OPENROUTER_URL
@@ -49,31 +45,18 @@ HARD_CLOSE_REQUIRED = [
 ]
 
 # =========================================================
-# LLM CALL
+# UTILITIES
 # =========================================================
 
-async def call_llm(messages, temperature=0.3, max_tokens=400):
-    async with httpx.AsyncClient(timeout=60) as client:
-        r = await client.post(
-            OPENROUTER_URL,
-            json={
-                "model": LLM_MODEL,
-                "messages": messages,
-                "temperature": temperature,
-                "max_tokens": max_tokens,
-            },
-            headers={
-                "Authorization": f"Bearer {OPENROUTER_API_KEY}",
-                "HTTP-Referer": "http://localhost:3000",
-                "X-Title": "Advyay AI"
-            }
-        )
+def extract_phone(text):
+    m = re.search(r'(\+?\d{10,15})', text)
+    return m.group(1) if m else None
 
-        if r.status_code != 200:
-            logger.error(r.text)
-            return ""
 
-        return r.json()["choices"][0]["message"]["content"]
+def extract_email(text):
+    m = re.search(r'[\w\.-]+@[\w\.-]+\.\w+', text)
+    return m.group(0) if m else None
+
 
 def safe_json_parse(text):
     try:
@@ -82,8 +65,31 @@ def safe_json_parse(text):
     except:
         return {}
 
+
+async def call_llm(messages, temperature=0.2, max_tokens=600):
+
+    async with httpx.AsyncClient(timeout=60) as client:
+
+        r = await client.post(
+            OPENROUTER_URL,
+            json={
+                "model": LLM_MODEL,
+                "messages": messages,
+                "temperature": temperature,
+                "max_tokens": max_tokens
+            },
+            headers={"Authorization": f"Bearer {OPENROUTER_API_KEY}"}
+        )
+
+        if r.status_code != 200:
+            print("LLM ERROR:", r.text)
+            return ""
+
+        return r.json()["choices"][0]["message"]["content"]
+
+
 # =========================================================
-# MAIN ENGINE
+# MAIN CHAT ENGINE
 # =========================================================
 
 @router.post("/chat")
@@ -98,11 +104,12 @@ async def chat(data: dict):
         return {"error": "session_id and message required"}
 
     user_message = user_message.strip()
+
     print(f"[{session_id}] USER → {user_message}")
 
-    # =====================================================
-    # LOAD / INIT
-    # =====================================================
+    # -----------------------------------------------------
+    # LOAD SESSION
+    # -----------------------------------------------------
 
     conversation = await db.conversations.find_one({"session_id": session_id})
 
@@ -125,9 +132,22 @@ async def chat(data: dict):
             "session_id": session_id
         }
 
-    # =====================================================
+    # -----------------------------------------------------
+    # DETECT EMAIL / PHONE BEFORE LLM
+    # -----------------------------------------------------
+
+    email = extract_email(user_message)
+    phone = extract_phone(user_message)
+
+    if email:
+        conversation["working_lead_data"]["email"] = email
+
+    if phone:
+        conversation["working_lead_data"]["phone"] = phone
+
+    # -----------------------------------------------------
     # APPEND USER MESSAGE
-    # =====================================================
+    # -----------------------------------------------------
 
     conversation["messages"].append({
         "role": "user",
@@ -137,246 +157,188 @@ async def chat(data: dict):
 
     conversation["exchange_count"] += 1
 
-    full_history = conversation["messages"]
-    last_12 = full_history[-12:]
+    full_history = conversation["messages"][-15:]
 
-    role_last_12 = "\n".join(
-        [f"{m['role'].upper()}: {m['content']}" for m in last_12]
+    history_text = "\n".join(
+        [f"{m['role'].upper()}: {m['content']}" for m in full_history]
     )
 
-    # =====================================================
-    # STRUCTURED EXTRACTION
-    # =====================================================
-
-    extraction_prompt = f"""
-Extract explicitly mentioned structured lead data.
-
-Return STRICT JSON with null for missing values.
-
-Fields:
-{json.dumps({k: "value or null" for k in REQUIRED_FIELDS}, indent=2)}
-
-Conversation:
-{role_last_12}
-"""
-
-    extraction_response = await call_llm(
-        [{"role": "system", "content": extraction_prompt}],
-        temperature=0,
-        max_tokens=250
-    )
-
-    extracted = safe_json_parse(extraction_response)
-
-    for k, v in extracted.items():
-        if v and isinstance(v, str):
-            conversation["working_lead_data"][k] = v.strip()
-
-    # =====================================================
-    # INTENT (MONOTONIC)
-    # =====================================================
-
-    intent_prompt = f"""
-Classify buyer stage:
-awareness | exploration | consideration | evaluation | decision
-
-Conversation:
-{role_last_12}
-
-Return JSON:
-{{"intent_stage": "..."}}
-"""
-
-    intent_resp = await call_llm(
-        [{"role": "system", "content": intent_prompt}],
-        temperature=0.2,
-        max_tokens=100
-    )
-
-    detected_intent = safe_json_parse(intent_resp).get("intent_stage", "awareness")
-    print(f"[{session_id}] Detected intent stage: {detected_intent}")
-    prev_intent = conversation.get("intent_stage", "awareness")
-
-    intent_stage = max(prev_intent, detected_intent, key=lambda x: INTENT_ORDER.index(x))
-    conversation["intent_stage"] = intent_stage
-
-    # =====================================================
-    # READINESS (MONOTONIC)
-    # =====================================================
-
-    readiness_prompt = f"""
-Score readiness 0-100.
-
-Conversation:
-{role_last_12}
-
-Return JSON:
-{{"readiness_score": 0-100}}
-"""
-
-    readiness_resp = await call_llm(
-        [{"role": "system", "content": readiness_prompt}],
-        temperature=0.2,
-        max_tokens=100
-    )
-
-    new_readiness = safe_json_parse(readiness_resp).get("readiness_score", 0)
-
-    conversation["readiness_score"] = max(
-        conversation.get("readiness_score", 0),
-        new_readiness
-    )
-
-    readiness_score = conversation["readiness_score"]
-
-    # =====================================================
-    # RAG CONTEXT (RESTORED)
-    # =====================================================
+    # -----------------------------------------------------
+    # RAG CONTEXT
+    # -----------------------------------------------------
 
     context_chunks = await vector_search(user_message, db, top_k=5)
     context_text = "\n\n".join([c["content"] for c in context_chunks]) if context_chunks else ""
 
-    # =====================================================
-    # DEAL BRAIN
-    # =====================================================
+    # -----------------------------------------------------
+    # SINGLE LLM INTELLIGENCE CALL
+    # -----------------------------------------------------
 
-    deal_brain_prompt = f"""
-You are the strategic convergence engine of Advyay.
+    intelligence_prompt = f"""
+You are an enterprise AI deal qualification engine.
+
+Analyze the conversation and return structured intelligence.
+
+Return STRICT JSON:
+
+{{
+ "intent_stage":"awareness|exploration|consideration|evaluation|decision",
+ "readiness_score":0-100,
+ "extracted_fields":{{
+    "name": "...",
+    "company": "...",
+    "role": "...",
+    "use_case": "...",
+    "budget_range": "...",
+    "timeline": "...",
+    "decision_maker": true/false,
+    "email": "...",
+    "phone": "..."
+ }},
+ "response":"natural conversational reply asking at most one question"
+}}
+
+Rules:
+- Extract only explicitly mentioned fields
+- If CEO/Founder → decision_maker=true
+- Do not ask for fields already collected
+- If intent ≥ evaluation and contact missing → request contact
+- Be concise and professional
+- End conversation if intent=decision, readiness≥70, and all hard fields collected
+- Say a thank you and summarize requirements when closing
 
 Knowledge Context:
 {context_text}
 
-Conversation:
-{role_last_12}
-
-Working Lead Data:
+Existing Data:
 {json.dumps(conversation["working_lead_data"], indent=2)}
 
-Intent: {intent_stage}
-Readiness: {readiness_score}
-Exchange Count: {conversation["exchange_count"]}
-
-Required Fields:
-{REQUIRED_FIELDS}
-
-Decide next action:
-
-1. If early stage → provide intelligent solution framing.
-2. If mid stage → clarify architecture.
-3. If high intent but missing key fields → ask naturally.
-4. If ready to close → return {{"action": "close"}}
-
-Otherwise return:
-{{"action": "continue", "message": "<natural response>"}}
-
-Rules:
-- Ask at most ONE question.
-- Do NOT interrogate.
-- Do NOT behave like a form.
-- Do NOT close if email or phone missing.
-- Use Knowledge Context.
-
-Return STRICT JSON only.
+Conversation:
+{history_text}
 """
 
-    brain_resp = await call_llm(
-        [{"role": "system", "content": deal_brain_prompt}],
-        temperature=0.3,
-        max_tokens=300
+    intelligence_response = await call_llm(
+        [{"role": "system", "content": intelligence_prompt}]
     )
-    print(f"[{session_id}] Deal brain response: {brain_resp}")
 
-    decision = safe_json_parse(brain_resp)
+    print(f"[{session_id}] Intelligence response:", intelligence_response)
 
-    # =====================================================
-    # BACKEND CLOSE GUARDRAILS
-    # =====================================================
+    intelligence = safe_json_parse(intelligence_response)
+
+    # -----------------------------------------------------
+    # UPDATE FIELDS
+    # -----------------------------------------------------
+
+    extracted = intelligence.get("extracted_fields", {})
+
+    for k, v in extracted.items():
+
+        if v in [None, "", "null", "None"]:
+            continue
+
+        conversation["working_lead_data"][k] = v
+
+    # -----------------------------------------------------
+    # MONOTONIC INTENT
+    # -----------------------------------------------------
+
+    detected_intent = intelligence.get("intent_stage", "awareness")
+
+    prev_intent = conversation["intent_stage"]
+
+    intent_stage = max(prev_intent, detected_intent,
+                       key=lambda x: INTENT_ORDER.index(x))
+
+    conversation["intent_stage"] = intent_stage
+
+    # -----------------------------------------------------
+    # MONOTONIC READINESS
+    # -----------------------------------------------------
+
+    readiness = intelligence.get("readiness_score", 0)
+
+    conversation["readiness_score"] = max(
+        conversation["readiness_score"],
+        readiness
+    )
+
+    readiness_score = conversation["readiness_score"]
+
+    # -----------------------------------------------------
+    # CHECK CLOSE CONDITIONS
+    # -----------------------------------------------------
 
     missing_close_fields = [
         f for f in HARD_CLOSE_REQUIRED
         if not conversation["working_lead_data"].get(f)
     ]
 
-    can_hard_close = (
+    can_close = (
         intent_stage in ["evaluation", "decision"]
         and readiness_score >= 70
         and conversation["exchange_count"] >= 5
         and not missing_close_fields
     )
 
-    if decision.get("action") == "close" and not can_hard_close:
-        decision = {
-            "action": "continue",
-            "message": "Before we move forward, could you share your best work email and contact number so we can coordinate next steps?"
-        }
+    print(f"can_close: {can_close} (intent: {intent_stage}, readiness: {readiness_score}, missing_fields: {missing_close_fields})")
 
-    # =====================================================
-    # HANDLE CLOSE
-    # =====================================================
+    # -----------------------------------------------------
+    # CLOSE DEAL
+    # -----------------------------------------------------
 
-    if decision.get("action") == "close" and can_hard_close:
-
-        role_full = "\n".join(
-            [f"{m['role'].upper()}: {m['content']}" for m in full_history]
-        )
+    if can_close:
 
         summary_prompt = f"""
-Create a professional executive summary.
-
-Based on FULL conversation.
-Include requirements, integration stack, constraints, urgency.
-5–6 concise business lines.
-No fluff.
+Write a concise executive summary (5 lines).
 
 Conversation:
-{role_full}
+{history_text}
 
-Structured:
+Structured Data:
 {json.dumps(conversation["working_lead_data"], indent=2)}
 """
 
         summary = await call_llm(
-            [{"role": "system", "content": summary_prompt}],
-            temperature=0.2,
-            max_tokens=300
+            [{"role": "system", "content": summary_prompt}]
         )
 
         await db.leads.insert_one({
             **conversation["working_lead_data"],
             "session_id": session_id,
-            "lead_summary": summary,
             "intent_stage": intent_stage,
             "readiness_score": readiness_score,
-            "created_at": datetime.utcnow()
+            "lead_summary": summary,
+            "created_at": datetime.utcnow(),
+            "status": "new"
         })
 
         conversation["is_closed"] = True
-        conversation["closed_at"] = datetime.utcnow()
 
         await db.conversations.update_one(
             {"session_id": session_id},
-            {"$set": conversation}
+            {"$set": conversation},
+            upsert=True
         )
 
         return {
             "content": f"""
-Thank you for the detailed discussion.
+Thank you for the discussion.
 
-Here is a summary of your requirements:
+Summary of requirements:
 
 {summary}
 
-Someone from Advyay will connect with you shortly to move forward.
+Our team will contact you shortly.
 """,
             "lead_created": True,
             "session_id": session_id
         }
 
-    # =====================================================
-    # CONTINUE CONVERSATION
-    # =====================================================
+    # -----------------------------------------------------
+    # NORMAL RESPONSE
+    # -----------------------------------------------------
 
-    response_text = decision.get("message", "Could you elaborate a bit more?")
+    response_text = intelligence.get("response", "Could you elaborate a bit more?")
 
     conversation["messages"].append({
         "role": "assistant",

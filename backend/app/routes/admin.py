@@ -168,7 +168,7 @@ async def get_dashboard_stats():
 
     total_visitors = await db.visitors.count_documents({})
     total_leads = await db.leads.count_documents({})
-    high_intent = await db.leads.count_documents({"confidence_score": {"$gte": 70}})
+    high_intent = await db.leads.count_documents({"readiness_score": {"$gte": 70}})
     converted = await db.leads.count_documents({"status": "converted"})
 
     return {

@@ -2,10 +2,13 @@
 
 import { useState } from 'react'
 
+import { API_URL } from "../lib/config"
+
 export default function LeadForm() {
   const [form, setForm] = useState({
     name: '',
     email: '',
+    phone: '',
     company: '',
     message: ''
   })
@@ -13,16 +16,33 @@ export default function LeadForm() {
   const handleSubmit = async (e: any) => {
     e.preventDefault()
 
-    await fetch('/api/lead', {
+    console.log("API URL:", API_URL)
+
+    const response = await fetch(`${API_URL}/api/lead`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         ...form,
         sessionId: localStorage.getItem('sessionId')
       })
+
+      
     })
 
+    console.log("Response from server:", response)
+
+    console.log("Lead form submitted with data:", {
+        ...form,
+        sessionId: localStorage.getItem('sessionId')
+      })
+
     alert('Enquiry submitted!')
+    // setForm({
+    //   name: '',
+    //   email: '',
+    //   company: '',
+    //   message: ''
+    // })
   }
 
   return (
@@ -37,6 +57,11 @@ export default function LeadForm() {
         placeholder="Email"
         required
         onChange={(e) => setForm({ ...form, email: e.target.value })}
+        className="w-full p-3 bg-gray-900 rounded"
+      />
+      <input
+        placeholder="Phone"
+        onChange={(e) => setForm({ ...form, phone: e.target.value })}
         className="w-full p-3 bg-gray-900 rounded"
       />
       <input
