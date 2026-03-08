@@ -28,6 +28,8 @@ export async function POST(req: NextRequest) {
       body: JSON.stringify(payload)
     })
 
+    console.log("Analytics event sent:", payload)
+
     const data = await res.json()
 
     return NextResponse.json(data)
