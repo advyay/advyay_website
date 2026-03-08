@@ -2,7 +2,6 @@ from fastapi import APIRouter, Request
 from app.core.database import get_database
 from datetime import datetime
 import httpx
-import uuid
 
 router = APIRouter(prefix="/analytics")
 
@@ -14,8 +13,8 @@ async def track_event(data: dict, request: Request):
 
     db = await get_database("Advyay")
 
-    session_id = data.get("session_id") or str(uuid.uuid4())
     visitor_id = data.get("visitor_id")
+    session_id = data.get("session_id")
 
     ip = (
         request.headers.get("x-forwarded-for", "").split(",")[0]
@@ -33,9 +32,7 @@ async def track_event(data: dict, request: Request):
             r = await client.get(IP_API_URL.format(ip))
 
             if r.status_code == 200:
-
                 g = r.json()
-
                 geo = {
                     "country": g.get("country_name"),
                     "city": g.get("city"),
@@ -43,71 +40,57 @@ async def track_event(data: dict, request: Request):
                 }
 
     except:
-        geo = {"country": "unknown"}
+        geo = {}
 
     event_doc = {
-
-        "session_id": session_id,
         "visitor_id": visitor_id,
-
+        "session_id": session_id,
         "type": data.get("type"),
         "page": data.get("page"),
-
-        "scroll_depth": data.get("scrollDepth"),
-        "time_on_page": data.get("timeOnPage"),
-
         "metadata": data.get("metadata"),
-
-        "device": data.get("device"),
-
-        "utm": data.get("utm"),
-        "referrer": data.get("referrer"),
-
-        "ip": ip,
-        "geo": geo,
-        "user_agent": user_agent,
-
         "created_at": datetime.utcnow()
-
     }
 
     await db.events.insert_one(event_doc)
 
-    await db.visitors.update_one(
-
-        {"visitor_id": visitor_id},
-
+    await db.sessions.update_one(
+        {"session_id": session_id},
         {
-
             "$setOnInsert": {
-
+                "session_id": session_id,
                 "visitor_id": visitor_id,
-                "first_seen": datetime.utcnow()
-
+                "started_at": datetime.utcnow()
             },
-
             "$set": {
-
-                "last_seen": datetime.utcnow(),
-                "geo": geo
-
+                "last_activity": datetime.utcnow()
             },
-
+            "$addToSet": {
+                "pages_viewed": data.get("page")
+            },
             "$inc": {
-
                 "event_count": 1
-
             }
-
         },
-
         upsert=True
-
     )
 
-    return {
+    await db.visitors.update_one(
+        {"visitor_id": visitor_id},
+        {
+            "$setOnInsert": {
+                "visitor_id": visitor_id,
+                "first_seen": datetime.utcnow(),
+                "geo": geo,
+                "user_agent": user_agent
+            },
+            "$set": {
+                "last_seen": datetime.utcnow()
+            },
+            "$inc": {
+                "total_events": 1
+            }
+        },
+        upsert=True
+    )
 
-        "success": True,
-        "session_id": session_id
-
-    }
+    return {"success": True}
