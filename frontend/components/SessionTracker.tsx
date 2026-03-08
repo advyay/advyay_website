@@ -3,11 +3,14 @@
 import { useEffect, useRef } from 'react'
 import { usePathname } from 'next/navigation'
 import axios from 'axios'
+import { API_URL } from '../lib/config'
 
 export default function SessionTracker() {
   const pathname = usePathname()
   const startTimeRef = useRef<number>(Date.now())
   const maxScrollRef = useRef<number>(0)
+
+  console.log("API_URL in SessionTracker:", API_URL)
 
   useEffect(() => {
     let sessionId = localStorage.getItem('session_id')
@@ -41,7 +44,7 @@ export default function SessionTracker() {
 
       try {
         await axios.post(
-          'http://localhost:8000/analytics/events',
+          `${API_URL}/analytics/events`,
           {
             type: 'page_view',
             page: pathname,
