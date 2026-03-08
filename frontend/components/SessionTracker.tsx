@@ -8,21 +8,35 @@ export default function SessionTracker() {
 
   const pathname = usePathname()
 
-  const visitorId = getVisitorId()
-  const sessionId = getSessionId()
-
+  const visitorRef = useRef<string | null>(null)
+  const sessionRef = useRef<string | null>(null)
   const lastPageRef = useRef<string>("")
 
   useEffect(() => {
 
+    const visitorId = getVisitorId()
+    const sessionId = getSessionId()
+
+    if (!visitorId || !sessionId) return
+
+    visitorRef.current = visitorId
+    sessionRef.current = sessionId
+
+  }, [])
+
+  useEffect(() => {
+
+    if (!visitorRef.current || !sessionRef.current) return
+
     if (lastPageRef.current === pathname) return
+
     lastPageRef.current = pathname
 
     trackEvent({
       type: "page_view",
       page: pathname,
-      visitor_id: visitorId,
-      session_id: sessionId,
+      visitor_id: visitorRef.current,
+      session_id: sessionRef.current,
       metadata: {}
     })
 
@@ -43,8 +57,8 @@ export default function SessionTracker() {
       trackEvent({
         type: "click",
         page: pathname,
-        visitor_id: visitorId,
-        session_id: sessionId,
+        visitor_id: visitorRef.current,
+        session_id: sessionRef.current,
         metadata: { label }
       })
     }
@@ -53,7 +67,7 @@ export default function SessionTracker() {
 
     return () => window.removeEventListener("click", handleClick)
 
-  }, [])
+  }, [pathname])
 
   return null
 }

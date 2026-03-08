@@ -1,7 +1,10 @@
 import axios from "axios"
 import { API_URL } from "./config"
 
-export function getVisitorId() {
+export function getVisitorId(): string | null {
+
+  if (typeof window === "undefined") return null
+
   let id = localStorage.getItem("visitor_id")
 
   if (!id) {
@@ -12,7 +15,10 @@ export function getVisitorId() {
   return id
 }
 
-export function getSessionId() {
+export function getSessionId(): string | null {
+
+  if (typeof window === "undefined") return null
+
   let id = sessionStorage.getItem("session_id")
 
   if (!id) {
@@ -24,9 +30,17 @@ export function getSessionId() {
 }
 
 export async function trackEvent(data: any) {
+
+  if (!API_URL) return
+
   try {
+
     await axios.post(`${API_URL}/analytics/events`, data)
+
   } catch (err) {
+
     console.error("analytics failed", err)
+
   }
+
 }
