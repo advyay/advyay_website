@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server"
 
 import { API_URL } from "../../../lib/config"
 
+console.log("API_URL in track route:", API_URL)
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json()
