@@ -55,6 +55,8 @@ export default function FloatingChat() {
     content: trimmedMessage
   }
 
+  console.log("API URL:", API_URL)
+
   console.log("Sending message:", trimmedMessage)
 
   // Immediately update UI
