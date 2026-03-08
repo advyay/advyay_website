@@ -1,37 +1,43 @@
-import { NextRequest, NextResponse } from 'next/server'
-import clientPromise from '../../../lib/mongodb'
-import axios from 'axios'
+import { NextRequest, NextResponse } from "next/server"
+
+import { API_URL } from "../../../lib/config"
 
 export async function POST(req: NextRequest) {
-  const body = await req.json()
-  const { type, page, sessionId } = body
-
-  const client = await clientPromise
-  const db = client.db()
-
-  const ip =
-    req.headers.get('x-forwarded-for') || 'unknown'
-
-  let geo = {}
-
   try {
-    const geoRes = await axios.get(`https://ipapi.co/${ip}/json/`)
-    geo = {
-      country: geoRes.data.country_name,
-      city: geoRes.data.city
+    const body = await req.json()
+
+    const payload = {
+      type: body.type,
+      page: body.page,
+      metadata: body.metadata || {},
+
+      // normalize naming
+      session_id: body.sessionId || body.session_id,
+      scrollDepth: body.scrollDepth,
+      timeOnPage: body.timeOnPage,
+
+      utm: body.utm,
+      referrer: body.referrer
     }
-  } catch {
-    geo = { country: 'unknown' }
+
+    const res = await fetch(`${API_URL}/analytics/events`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(payload)
+    })
+
+    const data = await res.json()
+
+    return NextResponse.json(data)
+
+  } catch (error) {
+    console.error("Analytics proxy error:", error)
+
+    return NextResponse.json(
+      { error: "Analytics tracking failed" },
+      { status: 500 }
+    )
   }
-
-  await db.collection('events').insertOne({
-    type,
-    page,
-    sessionId,
-    ip,
-    geo,
-    createdAt: new Date()
-  })
-
-  return NextResponse.json({ success: true })
 }

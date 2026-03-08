@@ -13,7 +13,7 @@ IP_API_URL = "https://ipapi.co/{}/json/"
 # ---------------------------
 
 @router.post("/events")
-async def track_event(request: Request, data: dict):
+async def track_event(data: dict, request: Request):    
 
     print("Tracking event:", data.get("type"), "from page:", data.get("page"))
 
