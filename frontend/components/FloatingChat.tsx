@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import axios from 'axios'
+import { API_URL } from '../lib/config'
 
 type Message = {
   role: 'user' | 'ai'
@@ -63,7 +64,7 @@ export default function FloatingChat() {
 
   try {
     const response = await axios.post(
-      "http://localhost:8000/chat",
+      `${API_URL}/chat`,
       {
         session_id: sessionId,      // ✅ Always send session id
         message: trimmedMessage     // ✅ Send ONLY latest message
