@@ -28,10 +28,9 @@ export default function SessionTracker() {
     visitorRef.current = visitorId
     sessionRef.current = sessionId
 
-    if (!visitorId || !sessionId) return
-
     startTimeRef.current = Date.now()
     maxScrollRef.current = 0
+    visibilityStartRef.current = Date.now()
 
     const device = getDeviceInfo()
 
@@ -77,8 +76,11 @@ export default function SessionTracker() {
         sendEvent({
           type: "visibility_hidden",
           page: pathname,
+          visitor_id: visitorRef.current,
           session_id: sessionRef.current,
-          active_time: activeTime
+          metadata: {
+            active_time: activeTime
+          }
         })
 
       } else {
@@ -90,8 +92,6 @@ export default function SessionTracker() {
     }
 
     const handleClick = (e: MouseEvent) => {
-
-      if (!sessionRef.current || !visitorRef.current) return
 
       const target = e.target as HTMLElement
 
@@ -106,7 +106,10 @@ export default function SessionTracker() {
         page: pathname,
         visitor_id: visitorRef.current,
         session_id: sessionRef.current,
-        metadata: { label }
+        metadata: {
+          label,
+          element: target.tagName
+        }
       })
 
     }
@@ -121,9 +124,12 @@ export default function SessionTracker() {
       sendEvent({
         type: "page_exit",
         page: pathname,
+        visitor_id: visitorRef.current,
         session_id: sessionRef.current,
-        scrollDepth: Math.round(maxScrollRef.current),
-        timeOnPage
+        metadata: {
+          scrollDepth: Math.round(maxScrollRef.current),
+          timeOnPage
+        }
       })
 
     }
@@ -157,8 +163,8 @@ export default function SessionTracker() {
 
 async function sendEvent(payload: any) {
 
-  // throttle events (1 per second max)
-  if (Date.now() - lastEventRef.current < 1000) return
+  // throttle analytics requests
+  if (Date.now() - lastEventRef.current < 500) return
   lastEventRef.current = Date.now()
 
   try {
@@ -176,6 +182,10 @@ async function sendEvent(payload: any) {
   }
 
 }
+
+/* ------------------------------
+   VISITOR ID (persistent)
+-------------------------------- */
 
 function getVisitorId() {
 
@@ -195,41 +205,76 @@ function getVisitorId() {
 
 }
 
+/* ------------------------------
+   SESSION ID (30 min expiry)
+-------------------------------- */
+
 function getSessionId() {
 
   if (typeof window === "undefined") return null
 
-  let id = sessionStorage.getItem("session_id")
+  const now = Date.now()
 
-  if (!id) {
+  const stored = localStorage.getItem("session")
 
-    id = crypto.randomUUID()
+  if (stored) {
 
-    sessionStorage.setItem("session_id", id)
+    const session = JSON.parse(stored)
+
+    if (now - session.lastActivity < 30 * 60 * 1000) {
+
+      session.lastActivity = now
+
+      localStorage.setItem("session", JSON.stringify(session))
+
+      return session.id
+
+    }
 
   }
+
+  const id = crypto.randomUUID()
+
+  localStorage.setItem("session", JSON.stringify({
+    id,
+    lastActivity: now
+  }))
 
   return id
 
 }
+
+/* ------------------------------
+   DEVICE INFO
+-------------------------------- */
 
 function getDeviceInfo() {
 
   if (typeof window === "undefined") return {}
 
   return {
+
     userAgent: navigator.userAgent,
+
     language: navigator.language,
+
     platform: navigator.platform,
+
     screen: {
       width: window.screen.width,
       height: window.screen.height
     },
+
     timezone:
       Intl.DateTimeFormat().resolvedOptions().timeZone
+
   }
 
 }
+
+/* ------------------------------
+   UTM PARAMETERS
+-------------------------------- */
 
 function getUTMParams() {
 
