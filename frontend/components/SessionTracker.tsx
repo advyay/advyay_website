@@ -15,8 +15,36 @@ export default function SessionTracker() {
 
   const visitorRef = useRef<string | null>(null)
   const sessionRef = useRef<string | null>(null)
+
   const lastPageRef = useRef<string>("")
   const lastEventRef = useRef<number>(0)
+
+  /* -------------------------
+     EVENT SENDER
+  -------------------------- */
+
+  const sendEvent = async (payload: any) => {
+
+    // throttle analytics calls
+    if (Date.now() - lastEventRef.current < 500) return
+
+    lastEventRef.current = Date.now()
+
+    try {
+
+      await axios.post(
+        `${API_URL}/analytics/events`,
+        payload,
+        { withCredentials: true }
+      )
+
+    } catch (err) {
+
+      console.error("Analytics error", err)
+
+    }
+
+  }
 
   useEffect(() => {
 
@@ -34,7 +62,7 @@ export default function SessionTracker() {
 
     const device = getDeviceInfo()
 
-    // Prevent duplicate page views
+    // prevent duplicate page view
     if (lastPageRef.current === pathname) return
     lastPageRef.current = pathname
 
@@ -48,6 +76,10 @@ export default function SessionTracker() {
       device,
       metadata: {}
     })
+
+    /* -------------------------
+       SCROLL TRACKING
+    -------------------------- */
 
     const handleScroll = () => {
 
@@ -63,6 +95,10 @@ export default function SessionTracker() {
       }
 
     }
+
+    /* -------------------------
+       VISIBILITY TRACKING
+    -------------------------- */
 
     const handleVisibilityChange = () => {
 
@@ -91,6 +127,10 @@ export default function SessionTracker() {
 
     }
 
+    /* -------------------------
+       CLICK TRACKING
+    -------------------------- */
+
     const handleClick = (e: MouseEvent) => {
 
       const target = e.target as HTMLElement
@@ -113,6 +153,10 @@ export default function SessionTracker() {
       })
 
     }
+
+    /* -------------------------
+       PAGE EXIT
+    -------------------------- */
 
     const handleUnload = () => {
 
@@ -161,31 +205,9 @@ export default function SessionTracker() {
   return null
 }
 
-async function sendEvent(payload: any) {
-
-  // throttle analytics requests
-  if (Date.now() - lastEventRef.current < 500) return
-  lastEventRef.current = Date.now()
-
-  try {
-
-    await axios.post(
-      `${API_URL}/analytics/events`,
-      payload,
-      { withCredentials: true }
-    )
-
-  } catch (err) {
-
-    console.error("Analytics error", err)
-
-  }
-
-}
-
-/* ------------------------------
-   VISITOR ID (persistent)
--------------------------------- */
+/* -------------------------
+   VISITOR ID
+-------------------------- */
 
 function getVisitorId() {
 
@@ -205,9 +227,9 @@ function getVisitorId() {
 
 }
 
-/* ------------------------------
+/* -------------------------
    SESSION ID (30 min expiry)
--------------------------------- */
+-------------------------- */
 
 function getSessionId() {
 
@@ -244,9 +266,9 @@ function getSessionId() {
 
 }
 
-/* ------------------------------
+/* -------------------------
    DEVICE INFO
--------------------------------- */
+-------------------------- */
 
 function getDeviceInfo() {
 
@@ -272,9 +294,9 @@ function getDeviceInfo() {
 
 }
 
-/* ------------------------------
-   UTM PARAMETERS
--------------------------------- */
+/* -------------------------
+   UTM PARAMS
+-------------------------- */
 
 function getUTMParams() {
 
