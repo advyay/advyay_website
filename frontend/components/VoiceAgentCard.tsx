@@ -149,10 +149,13 @@ export default function VoiceAgentCard({
         {callState === 'idle' && (
           <button
             onClick={startCall}
-            className="bg-gradient-to-r from-blue-600 to-purple-600
-                       px-5 py-2 rounded-lg text-sm font-medium"
+            className="flex items-center gap-2
+             bg-gradient-to-r from-blue-600 to-purple-600
+             px-4 py-2 rounded-lg text-sm font-medium
+             hover:scale-[1.03] transition"
           >
-            Start Call
+              ▶ Play Demo
+
           </button>
         )}
 

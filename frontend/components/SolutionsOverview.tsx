@@ -37,9 +37,9 @@ export default function SolutionsOverview() {
                        hover:border-blue-500/40 transition"
           >
             <div>
-              <h3 className="text-xl font-semibold text-white">
+              {/* <h3 className="text-xl font-semibold text-white">
                 ANVAY – Agentic AI CRM Platform
-              </h3>
+              </h3> */}
               <p className="text-sm text-gray-400 mt-1">
                 AI-powered CRM built for autonomous sales & lead workflows
               </p>

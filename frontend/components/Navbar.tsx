@@ -69,9 +69,9 @@ export default function Navbar() {
                       <Link href="/solutions" className="block text-gray-300 hover:text-white">
                         Custom Agentic AI Systems
                       </Link>
-                      <Link href="/platform" className="block text-gray-300 hover:text-white">
+                      {/* <Link href="/platform" className="block text-gray-300 hover:text-white">
                         ANVAY Agentic CRM
-                      </Link>
+                      </Link> */}
                     </div>
                   </motion.div>
                 )}

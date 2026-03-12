@@ -33,12 +33,12 @@ export default function Platform() {
               Request Platform Demo
             </Link>
 
-            <Link
+            {/* <Link
               href="/solutions"
               className="border border-white/20 px-8 py-4 rounded-xl hover:bg-white/10 transition"
             >
               See Use Cases
-            </Link>
+            </Link> */}
           </div>
         </div>
 

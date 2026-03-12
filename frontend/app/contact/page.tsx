@@ -35,12 +35,12 @@ export default function Contact() {
             and knowledge workflows.
           </p>
 
-          <button
+          {/* <button
             onClick={scrollToForm}
             className="mt-6 bg-gradient-to-r from-blue-600 to-purple-600 px-10 py-4 rounded-xl font-semibold shadow-[0_0_40px_rgba(88,101,242,0.4)] hover:opacity-90 transition"
           >
             Initiate Strategic Discussion
-          </button>
+          </button> */}
         </div>
 
         {/* Two Column Section */}

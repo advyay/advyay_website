@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import Link from 'next/dist/client/link'
 
 type Module = {
   title: string
@@ -20,18 +21,6 @@ const modules: Module[] = [
       'Call recording & structured memory storage',
       'Lead qualification & routing logic',
       'Deployment over SIP / cloud telephony'
-    ]
-  },
-  {
-    title: 'Anvay – Agentic AI CRM Platform',
-    description:
-      'Our proprietary AI-native CRM built for autonomous workflows and revenue operations.',
-    details: [
-      'Lead intelligence & behavioral tracking',
-      'Agent-assisted deal progression',
-      'AI-generated proposals & follow-ups',
-      'Persistent memory using structured knowledge graphs',
-      'Human + AI collaborative workflows'
     ]
   },
   {
@@ -78,55 +67,68 @@ export default function SolutionsArchitectureSection() {
             const isOpen = openIndex === index
 
             return (
-              <div
-                key={index}
-                className="border border-white/10 rounded-2xl bg-[#0B1220]/80 backdrop-blur-xl overflow-hidden"
-              >
-                {/* Header */}
-                <button
-                  onClick={() =>
-                    setOpenIndex(isOpen ? null : index)
-                  }
-                  className="w-full text-left px-8 py-6 flex justify-between items-center"
+              <>
+                <div
+                  key={index}
+                  className="border border-white/10 rounded-2xl bg-[#0B1220]/80 backdrop-blur-xl overflow-hidden"
                 >
-                  <div>
-                    <h3 className="text-xl font-semibold text-white">
-                      {module.title}
-                    </h3>
-                    <p className="text-gray-400 text-sm mt-1">
-                      {module.description}
-                    </p>
-                  </div>
+                  {/* Header */}
+                  <button
+                    onClick={() =>
+                      setOpenIndex(isOpen ? null : index)
+                    }
+                    className="w-full text-left px-8 py-6 flex justify-between items-center"
+                  >
+                    <div>
+                      <h3 className="text-xl font-semibold text-white">
+                        {module.title}
+                      </h3>
+                      <p className="text-gray-400 text-sm mt-1">
+                        {module.description}
+                      </p>
+                    </div>
 
-                  <span className="text-blue-400 text-xl">
-                    {isOpen ? '−' : '+'}
-                  </span>
-                </button>
+                    <span className="text-blue-400 text-xl">
+                      {isOpen ? '−' : '+'}
+                    </span>
+                  </button>
 
-                {/* Expandable Content */}
-                <AnimatePresence>
-                  {isOpen && (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: 'auto', opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.3 }}
-                      className="px-8 pb-8"
-                    >
-                      <div className="grid md:grid-cols-2 gap-6 pt-4">
-                        {module.details.map((detail, i) => (
-                          <div
-                            key={i}
-                            className="p-4 rounded-xl bg-[#111827] border border-white/5 text-gray-300 text-sm"
-                          >
-                            {detail}
-                          </div>
-                        ))}
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
+                  {/* Expandable Content */}
+                  <AnimatePresence>
+                    {isOpen && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.3 }}
+                        className="px-8 pb-8"
+                      >
+                        <div className="grid md:grid-cols-2 gap-6 pt-4">
+                          {module.details.map((detail, i) => (
+                            <div
+                              key={i}
+                              className="p-4 rounded-xl bg-[#111827] border border-white/5 text-gray-300 text-sm"
+                            >
+                              {detail}
+                            </div>
+                          ))}
+                           {index === 0 && (
+                              <div className="mt-10 text-center">
+                                <Link
+                                  href="/voiceAgentsDemoCards"
+                                  className="inline-block bg-gradient-to-r from-blue-600 to-purple-600 px-8 py-3 rounded-xl text-sm font-medium hover:opacity-90 transition"
+                                >
+                                  View Live Voice Agent Demos →
+                                </Link>
+                              </div>
+                            )}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+               
+              </>
             )
           })}
         </div>

@@ -39,16 +39,16 @@ export default function Hero() {
             automate sales conversations, lead qualification, CRM workflows,
             and internal knowledge operations.
           </p>
-
+{/* 
           <p className="text-lg text-gray-400 leading-relaxed">
             Advyay operates through:
-          </p>
+          </p> */}
 
           <div className="text-lg text-gray-300 space-y-2">
-            <p>
+            {/* <p>
               <span className="text-white font-semibold">ANVAY</span> — 
               an AI-native CRM platform with embedded autonomous agents
-            </p>
+            </p> */}
             <p>
               <span className="text-white font-semibold">Enterprise AI Implementation</span> — 
               custom voice agents, workflow automation, and AI integration
@@ -82,12 +82,19 @@ export default function Hero() {
         {/* CTA */}
         <div className="flex flex-col md:flex-row gap-6 justify-center pt-10">
 
-          <Link
+          {/* <Link
             href="/platform"
             className="bg-gradient-to-r from-blue-600 to-purple-600 px-12 py-5 rounded-xl font-semibold text-lg hover:opacity-90 transition"
           >
             Explore ANVAY Platform
+          </Link> */}
+
+          <Link
+            href="/voiceAgentsDemoCards"
+            className="bg-gradient-to-r from-blue-600 to-purple-600 px-12 py-5 rounded-xl font-semibold text-lg hover:opacity-90 transition"          >
+            View Live Voice Agent Demos →
           </Link>
+                            
 
           <Link
             href="/contact"

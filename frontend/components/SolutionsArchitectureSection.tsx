@@ -24,18 +24,18 @@ const modules: Module[] = [
       'Deployment over SIP / cloud telephony'
     ]
   },
-  {
-    title: 'Anvay – Agentic AI CRM Platform',
-    description:
-      'Our proprietary AI-native CRM built for autonomous workflows and revenue operations.',
-    details: [
-      'Lead intelligence & behavioral tracking',
-      'Agent-assisted deal progression',
-      'AI-generated proposals & follow-ups',
-      'Persistent memory using structured knowledge graphs',
-      'Human + AI collaborative workflows'
-    ]
-  },
+  // {
+  //   title: 'Anvay – Agentic AI CRM Platform',
+  //   description:
+  //     'Our proprietary AI-native CRM built for autonomous workflows and revenue operations.',
+  //   details: [
+  //     'Lead intelligence & behavioral tracking',
+  //     'Agent-assisted deal progression',
+  //     'AI-generated proposals & follow-ups',
+  //     'Persistent memory using structured knowledge graphs',
+  //     'Human + AI collaborative workflows'
+  //   ]
+  // },
   {
     title: 'Custom Agentic AI Systems',
     description:
