@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
+import Image from 'next/image'
 
 export default function Navbar() {
   const [open, setOpen] = useState(false)
@@ -36,12 +37,32 @@ export default function Navbar() {
         <div className="max-w-7xl mx-auto px-6 py-5 flex justify-between items-center">
 
           {/* LOGO */}
-          <Link href="/" className="text-xl font-semibold tracking-wide text-white">
-            ADVYAY
+          <Link href="/" className="flex items-center">
+            <Image
+              src="/images/advyay-logo.png"
+              alt="Advyay"
+              width={100}
+              height={40}
+              priority
+              className="object-contain"
+            />
           </Link>
+
+        
 
           {/* DESKTOP NAV */}
           <div className="hidden md:flex items-center gap-10 text-sm">
+
+            <Link
+              href="/"
+              className={`transition ${
+                pathname === '/'
+                  ? 'text-white'
+                  : 'text-gray-300 hover:text-white'
+              }`}
+            >
+              Home
+            </Link>
 
             {/* SOLUTIONS DROPDOWN */}
             <div
