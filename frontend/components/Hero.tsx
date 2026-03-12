@@ -5,9 +5,9 @@ import { motion } from 'framer-motion'
 
 export default function Hero() {
   return (
-    <section className="relative min-h-screen flex items-center justify-center px-6 pt-32 pb-24 bg-[#070B14] text-center">
+    <section className="relative min-h-screen flex items-center justify-center px-6 pt-32 pb-24 bg-transparent text-center">
 
-      <div className="max-w-6xl mx-auto space-y-12">
+      <div className="max-w-6xl mx-auto space-y-12 relative z-10">
 
         {/* Identity */}
         <motion.p
@@ -31,7 +31,6 @@ export default function Hero() {
           </span>
         </motion.h1>
 
-        {/* Clear Value Statement */}
         <div className="max-w-4xl mx-auto space-y-6">
 
           <p className="text-xl text-gray-300 leading-relaxed">
@@ -39,18 +38,10 @@ export default function Hero() {
             automate sales conversations, lead qualification, CRM workflows,
             and internal knowledge operations.
           </p>
-{/* 
-          <p className="text-lg text-gray-400 leading-relaxed">
-            Advyay operates through:
-          </p> */}
 
           <div className="text-lg text-gray-300 space-y-2">
-            {/* <p>
-              <span className="text-white font-semibold">ANVAY</span> — 
-              an AI-native CRM platform with embedded autonomous agents
-            </p> */}
             <p>
-              <span className="text-white font-semibold">Enterprise AI Implementation</span> — 
+              <span className="text-white font-semibold">Enterprise AI Implementation</span> —
               custom voice agents, workflow automation, and AI integration
               into existing CRM / ERP systems
             </p>
@@ -58,7 +49,7 @@ export default function Hero() {
 
         </div>
 
-        {/* Outcome Indicators */}
+        {/* Feature Pills */}
         <div className="flex flex-wrap justify-center gap-6 pt-4 text-sm text-gray-400">
 
           <span className="px-5 py-2 border border-white/10 rounded-full">
@@ -82,19 +73,12 @@ export default function Hero() {
         {/* CTA */}
         <div className="flex flex-col md:flex-row gap-6 justify-center pt-10">
 
-          {/* <Link
-            href="/platform"
-            className="bg-gradient-to-r from-blue-600 to-purple-600 px-12 py-5 rounded-xl font-semibold text-lg hover:opacity-90 transition"
-          >
-            Explore ANVAY Platform
-          </Link> */}
-
           <Link
             href="/voiceAgentsDemoCards"
-            className="bg-gradient-to-r from-blue-600 to-purple-600 px-12 py-5 rounded-xl font-semibold text-lg hover:opacity-90 transition"          >
+            className="bg-gradient-to-r from-blue-600 to-purple-600 px-12 py-5 rounded-xl font-semibold text-lg hover:opacity-90 transition"
+          >
             View Live Voice Agent Demos →
           </Link>
-                            
 
           <Link
             href="/contact"
@@ -105,7 +89,6 @@ export default function Hero() {
 
         </div>
 
-        {/* Subtle Positioning */}
         <p className="text-gray-500 text-sm pt-10 max-w-3xl mx-auto">
           We don’t build demo AI. We deploy governed, production-ready systems
           inside real enterprise operations.
