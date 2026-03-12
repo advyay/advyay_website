@@ -114,7 +114,7 @@ export default function NeuralNetwork() {
     <div className="w-full h-full">
       <Canvas
         // style={{width:'200%', height:'200%'}}
-        camera={{ position: [0, 0, 16], fov: 0 }}
+        camera={{ position: [0, 0, 30], fov: 5 }}
         gl={{ antialias: true }}
       >
         <fog attach="fog" args={['#070B14', 15, 35]} />
