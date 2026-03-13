@@ -6,6 +6,7 @@ import axios from "axios"
 export default function ContextUpload({ onUploadSuccess }: any) {
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState("")
+  const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"
 
   const handleFileChange = async (file: File | null) => {
     if (!file) return
@@ -18,7 +19,7 @@ export default function ContextUpload({ onUploadSuccess }: any) {
       setMessage("Uploading...")
 
       const res = await axios.post(
-        "http://127.0.0.1:8000/context/upload",
+        `${API}/context/upload`,
         formData,
         {
           withCredentials: true,
