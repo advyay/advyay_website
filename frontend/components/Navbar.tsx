@@ -165,22 +165,54 @@ export default function Navbar() {
                          bg-[#0B1220] border-l border-white/10
                          z-50 p-10 flex flex-col gap-8"
             >
-              <div className="mt-16 flex flex-col gap-6 text-lg">
+            <div className="mt-16 flex flex-col gap-6 text-lg">
 
-                {navItems.map((item) => (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    onClick={() => setOpen(false)}
-                    className={`${
-                      pathname === item.href
-                        ? 'text-white font-semibold'
-                        : 'text-gray-300'
-                    }`}
-                  >
-                    {item.name}
-                  </Link>
-                ))}
+                <Link href="/" onClick={() => setOpen(false)} className={`${pathname === '/' ? 'text-white font-semibold' : 'text-gray-300'}`}>
+                  Home
+                </Link>
+
+                <Link href="/platform" onClick={() => setOpen(false)} className={`${pathname === '/platform' ? 'text-white font-semibold' : 'text-gray-300'}`}>
+                  Platform
+                </Link>
+
+                <Link href="/ai-agents" onClick={() => setOpen(false)} className={`${pathname === '/ai-agents' ? 'text-white font-semibold' : 'text-gray-300'}`}>
+                  AI Agents
+                </Link>
+
+                {/* SOLUTIONS SECTION */}
+                <div className="pt-4 border-t border-white/10">
+                  <p className="text-xs tracking-wider text-gray-500 mb-3 uppercase">
+                    Solutions
+                  </p>
+
+                  <div className="flex flex-col gap-4 pl-2 text-base">
+
+                    <Link
+                      href="/voiceAgentsDemoCards"
+                      onClick={() => setOpen(false)}
+                      className="text-gray-300"
+                    >
+                      Enterprise Voice Agents
+                    </Link>
+
+                    <Link
+                      href="/solutions"
+                      onClick={() => setOpen(false)}
+                      className="text-gray-300"
+                    >
+                      Custom Agentic AI Systems
+                    </Link>
+
+                  </div>
+                </div>
+
+                <Link href="/about" onClick={() => setOpen(false)} className={`${pathname === '/about' ? 'text-white font-semibold' : 'text-gray-300'}`}>
+                  About
+                </Link>
+
+                <Link href="/contact" onClick={() => setOpen(false)} className={`${pathname === '/contact' ? 'text-white font-semibold' : 'text-gray-300'}`}>
+                  Contact
+                </Link>
 
               </div>
 
