@@ -21,6 +21,8 @@ export default function Dashboard() {
   // ================================
   useEffect(() => {
 
+    console.log("api", API)
+
     fetch(`${API}/admin/me`, {
       credentials: "include"
     })
