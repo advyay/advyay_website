@@ -7,10 +7,20 @@ import { motion, AnimatePresence } from 'framer-motion'
 import Image from 'next/image'
 
 export default function Navbar() {
+
+  const pathname = usePathname()
+
   const [open, setOpen] = useState(false)
   const [solutionsOpen, setSolutionsOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
-  const pathname = usePathname()
+
+  const navItems = [
+    { name: 'Home', href: '/' },
+    { name: 'Platform', href: '/platform' },
+    { name: 'AI Agents', href: '/ai-agents' },
+    { name: 'About', href: '/about' },
+    { name: 'Contact', href: '/contact' }
+  ]
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 40)
@@ -48,21 +58,31 @@ export default function Navbar() {
             />
           </Link>
 
-        
-
           {/* DESKTOP NAV */}
           <div className="hidden md:flex items-center gap-10 text-sm">
 
-            <Link
-              href="/"
-              className={`transition ${
-                pathname === '/'
-                  ? 'text-white'
-                  : 'text-gray-300 hover:text-white'
-              }`}
-            >
-              Home
-            </Link>
+            {/* NAV ITEMS */}
+            {navItems.map((item) => {
+              const active = pathname === item.href
+
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`relative pb-1 transition ${
+                    active
+                      ? 'text-white font-semibold'
+                      : 'text-gray-300 hover:text-white'
+                  }`}
+                >
+                  {item.name}
+
+                  {active && (
+                    <span className="absolute left-0 -bottom-1 w-full h-[2px] bg-gradient-to-r from-blue-500 to-purple-500 rounded-full"/>
+                  )}
+                </Link>
+              )
+            })}
 
             {/* SOLUTIONS DROPDOWN */}
             <div
@@ -84,72 +104,33 @@ export default function Navbar() {
                     className="absolute top-10 left-0 w-72 bg-[#0B1220] border border-white/10 rounded-xl p-6 shadow-xl"
                   >
                     <div className="space-y-4 text-sm">
-                      <Link href="/voiceAgentsDemoCards" className="block text-gray-300 hover:text-white">
+                      <Link
+                        href="/voiceAgentsDemoCards"
+                        className="block text-gray-300 hover:text-white"
+                      >
                         Enterprise Voice Agents
                       </Link>
-                      <Link href="/solutions" className="block text-gray-300 hover:text-white">
+
+                      <Link
+                        href="/solutions"
+                        className="block text-gray-300 hover:text-white"
+                      >
                         Custom Agentic AI Systems
                       </Link>
-                      {/* <Link href="/platform" className="block text-gray-300 hover:text-white">
-                        ANVAY Agentic CRM
-                      </Link> */}
                     </div>
                   </motion.div>
                 )}
               </AnimatePresence>
             </div>
 
-            <Link
-              href="/platform"
-              className={`transition ${
-                pathname === '/platform'
-                  ? 'text-white'
-                  : 'text-gray-300 hover:text-white'
-              }`}
-            >
-              Platform
-            </Link>
-
-            <Link
-              href="/ai-agents"
-              className={`transition ${
-                pathname === '/ai-agents'
-                  ? 'text-white'
-                  : 'text-gray-300 hover:text-white'
-              }`}
-            >
-              AI Agents
-            </Link>
-
-            <Link
-              href="/about"
-              className={`transition ${
-                pathname === '/about'
-                  ? 'text-white'
-                  : 'text-gray-300 hover:text-white'
-              }`}
-            >
-              About
-            </Link>
-
-            <Link
-              href="/contact"
-              className={`transition ${
-                pathname === '/contact'
-                  ? 'text-white'
-                  : 'text-gray-300 hover:text-white'
-              }`}
-            >
-              Contact
-            </Link>
-
-            {/* STRONG CTA */}
+            {/* CTA */}
             <Link
               href="/contact"
               className="ml-4 bg-gradient-to-r from-blue-600 to-purple-600 px-6 py-2 rounded-lg text-white font-medium hover:opacity-90 transition"
             >
               Schedule Consultation
             </Link>
+
           </div>
 
           {/* MOBILE MENU BUTTON */}
@@ -159,6 +140,7 @@ export default function Navbar() {
           >
             ☰
           </button>
+
         </div>
       </motion.nav>
 
@@ -184,11 +166,22 @@ export default function Navbar() {
                          z-50 p-10 flex flex-col gap-8"
             >
               <div className="mt-16 flex flex-col gap-6 text-lg">
-                <Link href="/" onClick={() => setOpen(false)}>Home</Link>
-                <Link href="/platform" onClick={() => setOpen(false)}>Platform</Link>
-                <Link href="/ai-agents" onClick={() => setOpen(false)}>AI Agents</Link>
-                <Link href="/about" onClick={() => setOpen(false)}>About</Link>
-                <Link href="/contact" onClick={() => setOpen(false)}>Contact</Link>
+
+                {navItems.map((item) => (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={() => setOpen(false)}
+                    className={`${
+                      pathname === item.href
+                        ? 'text-white font-semibold'
+                        : 'text-gray-300'
+                    }`}
+                  >
+                    {item.name}
+                  </Link>
+                ))}
+
               </div>
 
               <Link
@@ -198,6 +191,7 @@ export default function Navbar() {
               >
                 Schedule Consultation
               </Link>
+
             </motion.div>
           </>
         )}
