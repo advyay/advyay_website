@@ -13,6 +13,7 @@ export default function Navbar() {
   const [open, setOpen] = useState(false)
   const [solutionsOpen, setSolutionsOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  const [mobileSolutionsOpen, setMobileSolutionsOpen] = useState(false)
 
   const navItems = [
     { name: 'Home', href: '/' },
@@ -21,6 +22,10 @@ export default function Navbar() {
     { name: 'About', href: '/about' },
     { name: 'Contact', href: '/contact' }
   ]
+
+  const solutionsActive =
+    pathname === '/solutions' ||
+    pathname === '/voiceAgentsDemoCards'
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 40)
@@ -90,7 +95,13 @@ export default function Navbar() {
               onMouseEnter={() => setSolutionsOpen(true)}
               onMouseLeave={() => setSolutionsOpen(false)}
             >
-              <button className="text-gray-300 hover:text-white transition flex items-center gap-2">
+              <button
+                className={`transition flex items-center gap-2 ${
+                  solutionsActive
+                    ? 'text-white font-semibold'
+                    : 'text-gray-300 hover:text-white'
+                }`}
+              >
                 Solutions
                 <span className="text-xs">▾</span>
               </button>
@@ -104,19 +115,29 @@ export default function Navbar() {
                     className="absolute top-10 left-0 w-72 bg-[#0B1220] border border-white/10 rounded-xl p-6 shadow-xl"
                   >
                     <div className="space-y-4 text-sm">
+
                       <Link
                         href="/voiceAgentsDemoCards"
-                        className="block text-gray-300 hover:text-white"
+                        className={`block transition ${
+                          pathname === '/voiceAgentsDemoCards'
+                            ? 'text-white font-semibold'
+                            : 'text-gray-300 hover:text-white'
+                        }`}
                       >
                         Enterprise Voice Agents
                       </Link>
 
                       <Link
                         href="/solutions"
-                        className="block text-gray-300 hover:text-white"
+                        className={`block transition ${
+                          pathname === '/solutions'
+                            ? 'text-white font-semibold'
+                            : 'text-gray-300 hover:text-white'
+                        }`}
                       >
                         Custom Agentic AI Systems
                       </Link>
+
                     </div>
                   </motion.div>
                 )}
@@ -165,54 +186,86 @@ export default function Navbar() {
                          bg-[#0B1220] border-l border-white/10
                          z-50 p-10 flex flex-col gap-8"
             >
-            <div className="mt-16 flex flex-col gap-6 text-lg">
+              <div className="mt-16 flex flex-col gap-3 text-lg">
 
-                <Link href="/" onClick={() => setOpen(false)} className={`${pathname === '/' ? 'text-white font-semibold' : 'text-gray-300'}`}>
-                  Home
-                </Link>
+                {navItems.map((item) => {
+                  const active = pathname === item.href
 
-                <Link href="/platform" onClick={() => setOpen(false)} className={`${pathname === '/platform' ? 'text-white font-semibold' : 'text-gray-300'}`}>
-                  Platform
-                </Link>
+                  return (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      onClick={() => setOpen(false)}
+                      className={`px-4 py-3 rounded-lg transition ${
+                        active
+                          ? 'text-white font-semibold bg-white/5'
+                          : 'text-gray-300'
+                      }`}
+                    >
+                      {item.name}
+                    </Link>
+                  )
+                })}
 
-                <Link href="/ai-agents" onClick={() => setOpen(false)} className={`${pathname === '/ai-agents' ? 'text-white font-semibold' : 'text-gray-300'}`}>
-                  AI Agents
-                </Link>
+                {/* MOBILE SOLUTIONS */}
+                <div className="flex flex-col">
 
-                {/* SOLUTIONS SECTION */}
-                <div className="pt-4 border-t border-white/10">
-                  <p className="text-xs tracking-wider text-gray-500 mb-3 uppercase">
+                  <button
+                    onClick={() => setMobileSolutionsOpen(!mobileSolutionsOpen)}
+                    className={`flex justify-between items-center px-4 py-3 ${
+                      solutionsActive
+                        ? 'text-white font-semibold bg-white/5 rounded-lg'
+                        : 'text-gray-300 hover:text-white'
+                    }`}
+                  >
                     Solutions
-                  </p>
-
-                  <div className="flex flex-col gap-4 pl-2 text-base">
-
-                    <Link
-                      href="/voiceAgentsDemoCards"
-                      onClick={() => setOpen(false)}
-                      className="text-gray-300"
+                    <span
+                      className={`transition-transform ${
+                        mobileSolutionsOpen ? 'rotate-180' : ''
+                      }`}
                     >
-                      Enterprise Voice Agents
-                    </Link>
+                      ▾
+                    </span>
+                  </button>
 
-                    <Link
-                      href="/solutions"
-                      onClick={() => setOpen(false)}
-                      className="text-gray-300"
-                    >
-                      Custom Agentic AI Systems
-                    </Link>
+                  <AnimatePresence>
+                    {mobileSolutionsOpen && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        exit={{ opacity: 0, height: 0 }}
+                        className="flex flex-col pl-6 gap-3 text-base"
+                      >
 
-                  </div>
+                        <Link
+                          href="/voiceAgentsDemoCards"
+                          onClick={() => setOpen(false)}
+                          className={`transition ${
+                            pathname === '/voiceAgentsDemoCards'
+                              ? 'text-white font-semibold'
+                              : 'text-gray-300'
+                          }`}
+                        >
+                          Enterprise Voice Agents
+                        </Link>
+
+                        <Link
+                          href="/solutions"
+                          onClick={() => setOpen(false)}
+                          className={`transition ${
+                            pathname === '/solutions'
+                              ? 'text-white font-semibold'
+                              : 'text-gray-300'
+                          }`}
+                        >
+                          Custom Agentic AI Systems
+                        </Link>
+
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+
                 </div>
-
-                <Link href="/about" onClick={() => setOpen(false)} className={`${pathname === '/about' ? 'text-white font-semibold' : 'text-gray-300'}`}>
-                  About
-                </Link>
-
-                <Link href="/contact" onClick={() => setOpen(false)} className={`${pathname === '/contact' ? 'text-white font-semibold' : 'text-gray-300'}`}>
-                  Contact
-                </Link>
 
               </div>
 
