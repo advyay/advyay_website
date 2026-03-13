@@ -11,7 +11,7 @@ export default function LeadsList() {
   const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"
 
   useEffect(() => {
-    fetch(`${API_URL}/admin/leads`, {
+    fetch(`${API}/admin/leads`, {
       credentials: "include"
     })
       .then(res => res.json())
