@@ -40,24 +40,22 @@ async def login(data: dict, response: Response):
     if not verify_password(password, ADMIN_PASSWORD_HASH):
         raise HTTPException(status_code=401, detail="Invalid credentials")
 
-    # create token immediately
     token = create_access_token({
         "email": ADMIN_EMAIL,
         "role": "admin"
     })
 
-
     response.set_cookie(
         key="admin_token",
         value=token,
         httponly=True,
-        secure=True,          # REQUIRED for HTTPS (Vercel)
-        samesite="none",      # REQUIRED for cross-domain cookies
-        path="/"
+        secure=True,
+        samesite="none",
+        path="/",
+        max_age=86400
     )
 
     return {"message": "Login successful"}
-
 # =========================
 # STEP 2: VERIFY OTP
 # =========================
