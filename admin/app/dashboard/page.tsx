@@ -14,61 +14,75 @@ export default function Dashboard() {
   const [active, setActive] = useState("dashboard")
   const [authenticated, setAuthenticated] = useState(false)
   const [loading, setLoading] = useState(true)
+
   const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"
 
-  // ================================
+  // =====================================
+  // AUTH FETCH WRAPPER (always send cookies)
+  // =====================================
+  const apiFetch = async (url: string) => {
+    const res = await fetch(`${API}${url}`, {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
+
+    if (!res.ok) throw new Error("Request failed")
+
+    return res.json()
+  }
+
+  // =====================================
   // AUTH CHECK
-  // ================================
+  // =====================================
   useEffect(() => {
 
-    console.log("api", API)
+    const checkAuth = async () => {
 
-    fetch(`${API}/admin/me`, {
-      credentials: "include"
-    })
-      .then(res => {
+      try {
 
-        if (!res.ok) {
-          window.location.href = "/admin/login"
-          return
-        }
+        await fetch(`${API}/admin/me`, {
+          credentials: "include"
+        })
 
         setAuthenticated(true)
         setLoading(false)
 
-      })
-      .catch(() => {
-        window.location.href = "/admin/login"
-      })
+      } catch (err) {
+
+        window.location.href = "/login"
+
+      }
+
+    }
+
+    checkAuth()
 
   }, [])
 
-  // ================================
+  // =====================================
   // FETCH STATS
-  // ================================
+  // =====================================
   useEffect(() => {
 
     if (!authenticated) return
 
-    fetch(`${API}/admin/stats`, {
-      credentials: "include"
-    })
-      .then(res => res.json())
+    apiFetch("/admin/stats")
       .then(data => setStats(data))
+      .catch(() => console.error("Failed to load stats"))
 
   }, [authenticated])
 
-  // ================================
+  // =====================================
   // FETCH VISITORS
-  // ================================
+  // =====================================
   useEffect(() => {
 
     if (!authenticated) return
 
-    fetch(`${API}/admin/visitors`, {
-      credentials: "include"
-    })
-      .then(res => res.json())
+    apiFetch("/admin/visitors")
       .then(data => {
 
         if (Array.isArray(data)) {
@@ -80,12 +94,14 @@ export default function Dashboard() {
         }
 
       })
+      .catch(() => console.error("Failed to load visitors"))
 
   }, [authenticated])
 
-  // ================================
+
+  // =====================================
   // LOADING SCREEN
-  // ================================
+  // =====================================
   if (loading) {
     return (
       <div className="h-screen flex items-center justify-center bg-[#070B14] text-white">
@@ -98,10 +114,7 @@ export default function Dashboard() {
 
     <div className="flex h-screen bg-[#070B14] text-white">
 
-      {/* ================================
-          SIDEBAR
-      ================================= */}
-
+      {/* SIDEBAR */}
       <aside className="w-64 bg-[#0B1220] border-r border-white/10 flex flex-col">
 
         <div className="px-6 py-6 border-b border-white/10">
@@ -112,89 +125,42 @@ export default function Dashboard() {
 
         <nav className="flex-1 p-4 space-y-2">
 
-          <SidebarItem
-            label="Dashboard"
-            active={active === "dashboard"}
-            onClick={() => setActive("dashboard")}
-          />
-
-          <SidebarItem
-            label="Visitors"
-            active={active === "visitors"}
-            onClick={() => setActive("visitors")}
-          />
-
-          <SidebarItem
-            label="Leads"
-            active={active === "leads"}
-            onClick={() => setActive("leads")}
-          />
-
-          <SidebarItem
-            label="Knowledge Base"
-            active={active === "knowledge"}
-            onClick={() => setActive("knowledge")}
-          />
+          <SidebarItem label="Dashboard" active={active === "dashboard"} onClick={() => setActive("dashboard")} />
+          <SidebarItem label="Visitors" active={active === "visitors"} onClick={() => setActive("visitors")} />
+          <SidebarItem label="Leads" active={active === "leads"} onClick={() => setActive("leads")} />
+          <SidebarItem label="Knowledge Base" active={active === "knowledge"} onClick={() => setActive("knowledge")} />
 
         </nav>
 
       </aside>
 
-
-      {/* ================================
-          MAIN CONTENT
-      ================================= */}
-
+      {/* MAIN CONTENT */}
       <main className="flex-1 overflow-y-auto px-10 py-12 space-y-12">
 
-        {/* HEADER */}
-
         <div className="flex justify-between items-center">
-
           <h1 className="text-3xl font-semibold tracking-tight">
             Admin Control Panel
           </h1>
-
           <span className="text-sm text-gray-400">
             Advyay Enterprise Console
           </span>
-
         </div>
 
-
         {/* DASHBOARD */}
-
         {active === "dashboard" && stats && (
 
           <div className="grid md:grid-cols-4 gap-6">
 
-            <StatCard
-              title="Total Visitors"
-              value={stats.total_visitors}
-            />
-
-            <StatCard
-              title="Total Leads"
-              value={stats.total_leads}
-            />
-
-            <StatCard
-              title="High Intent Leads"
-              value={stats.high_intent}
-            />
-
-            <StatCard
-              title="Conversions"
-              value={stats.converted}
-            />
+            <StatCard title="Total Visitors" value={stats.total_visitors} />
+            <StatCard title="Total Leads" value={stats.total_leads} />
+            <StatCard title="High Intent Leads" value={stats.high_intent} />
+            <StatCard title="Conversions" value={stats.converted} />
 
           </div>
 
         )}
 
-
         {/* KNOWLEDGE BASE */}
-
         {active === "knowledge" && (
 
           <div className="bg-[#0B1220] border border-white/10 rounded-2xl p-8 space-y-6">
@@ -203,11 +169,7 @@ export default function Dashboard() {
               Knowledge Base
             </h2>
 
-            <ContextUpload
-              onUploadSuccess={() =>
-                setRefreshKey(prev => prev + 1)
-              }
-            />
+            <ContextUpload onUploadSuccess={() => setRefreshKey(prev => prev + 1)} />
 
             <ContextList refreshKey={refreshKey} />
 
@@ -215,9 +177,7 @@ export default function Dashboard() {
 
         )}
 
-
         {/* LEADS */}
-
         {active === "leads" && (
 
           <div className="bg-[#0B1220] border border-white/10 rounded-2xl p-8">
@@ -232,9 +192,7 @@ export default function Dashboard() {
 
         )}
 
-
         {/* VISITORS */}
-
         {active === "visitors" && (
           <VisitorsList visitors={visitors} />
         )}
@@ -242,9 +200,9 @@ export default function Dashboard() {
       </main>
 
     </div>
+
   )
 }
-
 
 function SidebarItem({ label, active, onClick }: any) {
 
@@ -253,11 +211,10 @@ function SidebarItem({ label, active, onClick }: any) {
     <button
       onClick={onClick}
       className={`w-full text-left px-4 py-3 rounded-lg transition
-        ${
-          active
-            ? "bg-blue-600 text-white"
-            : "text-gray-400 hover:bg-[#111827] hover:text-white"
-        }`}
+        ${active
+          ? "bg-blue-600 text-white"
+          : "text-gray-400 hover:bg-[#111827] hover:text-white"}
+      `}
     >
       {label}
     </button>
@@ -265,7 +222,6 @@ function SidebarItem({ label, active, onClick }: any) {
   )
 
 }
-
 
 function StatCard({ title, value }: any) {
 

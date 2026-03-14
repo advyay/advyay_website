@@ -46,12 +46,14 @@ async def login(data: dict, response: Response):
         "role": "admin"
     })
 
+
     response.set_cookie(
         key="admin_token",
         value=token,
         httponly=True,
-        secure=False,   # change to True in production
-        samesite="lax"
+        secure=True,          # REQUIRED for HTTPS (Vercel)
+        samesite="none",      # REQUIRED for cross-domain cookies
+        path="/"
     )
 
     return {"message": "Login successful"}
