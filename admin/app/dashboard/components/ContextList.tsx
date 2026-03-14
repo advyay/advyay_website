@@ -41,7 +41,6 @@ export default function ContextList({ refreshKey }: any) {
   }, [refreshKey])
 
 
-  // VIEW DOCUMENT
   const viewDocument = async (id: string) => {
 
     try {
@@ -62,7 +61,6 @@ export default function ContextList({ refreshKey }: any) {
   }
 
 
-  // DELETE DOCUMENT
   const deleteDocument = async (id: string) => {
 
     if (!confirm("Delete this document?")) return
@@ -91,7 +89,6 @@ export default function ContextList({ refreshKey }: any) {
   }
 
 
-  // DOWNLOAD DOCUMENT
   const downloadDocument = (id: string) => {
 
     window.open(
@@ -104,7 +101,7 @@ export default function ContextList({ refreshKey }: any) {
 
   return (
 
-    <div className="bg-gray-900 p-6 rounded-xl space-y-4">
+    <div className="bg-[#0B1220] border border-white/10 rounded-xl p-6 space-y-4">
 
       <h2 className="text-xl font-semibold">
         Uploaded Documents
@@ -125,74 +122,129 @@ export default function ContextList({ refreshKey }: any) {
       )}
 
 
-      {documents.map((doc) => (
+      {/* ======================
+         DESKTOP LIST
+      ====================== */}
 
-        <div
-          key={doc.document_id}
-          className="bg-gray-800 p-4 rounded-lg flex items-center justify-between"
-        >
+      <div className="hidden md:block space-y-3">
 
-          {/* DOCUMENT INFO */}
+        {documents.map((doc) => (
 
-          <div>
+          <div
+            key={doc.document_id}
+            className="bg-[#111827] p-4 rounded-lg flex items-center justify-between"
+          >
 
-            <p className="text-sm font-medium">
-              Document ID: {doc.document_id}
-            </p>
+            <div>
 
-            <p className="text-xs text-gray-400">
-              Chunks: {doc.total_chunks}
-            </p>
+              <p className="text-sm font-medium break-all">
+                {doc.document_id}
+              </p>
 
-          </div>
+              <p className="text-xs text-gray-400">
+                Chunks: {doc.total_chunks}
+              </p>
 
+            </div>
 
-          {/* ACTION BUTTONS */}
+            <div className="flex gap-3">
 
-          <div className="flex gap-3">
+              <ActionButton color="blue" onClick={()=>viewDocument(doc.document_id)}>
+                View
+              </ActionButton>
 
-            <button
-              onClick={() => viewDocument(doc.document_id)}
-              className="px-3 py-1 text-sm bg-blue-600 rounded hover:bg-blue-500"
-            >
-              View
-            </button>
+              <ActionButton color="green" onClick={()=>downloadDocument(doc.document_id)}>
+                Download
+              </ActionButton>
 
-            <button
-              onClick={() => downloadDocument(doc.document_id)}
-              className="px-3 py-1 text-sm bg-green-600 rounded hover:bg-green-500"
-            >
-              Download
-            </button>
+              <ActionButton color="red" onClick={()=>deleteDocument(doc.document_id)}>
+                Delete
+              </ActionButton>
 
-            <button
-              onClick={() => deleteDocument(doc.document_id)}
-              className="px-3 py-1 text-sm bg-red-600 rounded hover:bg-red-500"
-            >
-              Delete
-            </button>
+            </div>
 
           </div>
 
-        </div>
+        ))}
 
-      ))}
+      </div>
 
 
-      {/* RIGHT SIDE DRAWER */}
+      {/* ======================
+         MOBILE CARDS
+      ====================== */}
+
+      <div className="md:hidden space-y-3">
+
+        {documents.map((doc)=>(
+          <div
+            key={doc.document_id}
+            className="bg-[#111827] p-4 rounded-lg space-y-3"
+          >
+
+            <div>
+
+              <p className="text-xs text-gray-400">
+                Document
+              </p>
+
+              <p className="text-sm break-all">
+                {doc.document_id}
+              </p>
+
+              <p className="text-xs text-gray-400 mt-1">
+                {doc.total_chunks} chunks
+              </p>
+
+            </div>
+
+            <div className="flex gap-2 flex-wrap">
+
+              <ActionButton color="blue" onClick={()=>viewDocument(doc.document_id)}>
+                View
+              </ActionButton>
+
+              <ActionButton color="green" onClick={()=>downloadDocument(doc.document_id)}>
+                Download
+              </ActionButton>
+
+              <ActionButton color="red" onClick={()=>deleteDocument(doc.document_id)}>
+                Delete
+              </ActionButton>
+
+            </div>
+
+          </div>
+        ))}
+
+      </div>
+
+
+      {/* ======================
+         DRAWER
+      ====================== */}
 
       {selectedDoc && (
 
-        <div className="fixed right-0 top-0 h-full w-[520px] bg-[#070B14] border-l border-white/10 p-8 overflow-y-auto z-50">
+        <div className="
+          fixed right-0 top-0
+          w-full md:w-[520px]
+          h-full
+          bg-[#070B14]
+          border-l border-white/10
+          p-6 md:p-8
+          overflow-y-auto
+          z-50
+        ">
 
           <div className="flex justify-between items-center mb-6">
 
-            <h2 className="text-xl font-semibold">
+            <h2 className="text-lg md:text-xl font-semibold">
               Document Chunks
             </h2>
 
             <button
-              onClick={() => setSelectedDoc(null)}
+              onClick={()=>setSelectedDoc(null)}
               className="text-gray-400 hover:text-white"
             >
               ✕
@@ -201,10 +253,9 @@ export default function ContextList({ refreshKey }: any) {
           </div>
 
 
-          <div className="space-y-6">
+          <div className="space-y-5">
 
-            {selectedDoc.chunks.map((chunk: any) => (
-
+            {selectedDoc.chunks.map((chunk:any)=>(
               <div
                 key={chunk._id}
                 className="bg-[#111827] border border-white/10 p-4 rounded-lg"
@@ -219,7 +270,6 @@ export default function ContextList({ refreshKey }: any) {
                 </p>
 
               </div>
-
             ))}
 
           </div>
@@ -229,6 +279,28 @@ export default function ContextList({ refreshKey }: any) {
       )}
 
     </div>
+
+  )
+
+}
+
+
+function ActionButton({color,onClick,children}:any){
+
+  const colors={
+    blue:"bg-blue-600 hover:bg-blue-500",
+    green:"bg-green-600 hover:bg-green-500",
+    red:"bg-red-600 hover:bg-red-500"
+  }
+
+  return(
+
+    <button
+      onClick={onClick}
+      className={`px-3 py-1 text-sm rounded ${colors[color]}`}
+    >
+      {children}
+    </button>
 
   )
 
