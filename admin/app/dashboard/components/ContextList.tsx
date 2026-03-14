@@ -5,11 +5,39 @@ import axios from "axios"
 
 const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"
 
-export default function ContextList({ refreshKey }: any) {
 
-  const [documents, setDocuments] = useState<any[]>([])
+/* ================================
+   TYPES
+================================ */
+
+type DocumentItem = {
+  document_id: string
+  total_chunks: number
+}
+
+type Chunk = {
+  _id: string
+  chunk_index: number
+  content: string
+}
+
+type SelectedDoc = {
+  document_id: string
+  chunks: Chunk[]
+}
+
+type ButtonColor = "blue" | "green" | "red"
+
+
+/* ================================
+   COMPONENT
+================================ */
+
+export default function ContextList({ refreshKey }: { refreshKey: number }) {
+
+  const [documents, setDocuments] = useState<DocumentItem[]>([])
   const [loading, setLoading] = useState(false)
-  const [selectedDoc, setSelectedDoc] = useState<any | null>(null)
+  const [selectedDoc, setSelectedDoc] = useState<SelectedDoc | null>(null)
 
   const fetchDocuments = async () => {
 
@@ -17,7 +45,7 @@ export default function ContextList({ refreshKey }: any) {
 
       setLoading(true)
 
-      const res = await axios.get(
+      const res = await axios.get<DocumentItem[]>(
         `${API}/context`,
         { withCredentials: true }
       )
@@ -41,11 +69,15 @@ export default function ContextList({ refreshKey }: any) {
   }, [refreshKey])
 
 
+  /* ================================
+     VIEW DOCUMENT
+  ================================ */
+
   const viewDocument = async (id: string) => {
 
     try {
 
-      const res = await axios.get(
+      const res = await axios.get<SelectedDoc>(
         `${API}/context/${id}`,
         { withCredentials: true }
       )
@@ -60,6 +92,10 @@ export default function ContextList({ refreshKey }: any) {
 
   }
 
+
+  /* ================================
+     DELETE DOCUMENT
+  ================================ */
 
   const deleteDocument = async (id: string) => {
 
@@ -88,6 +124,10 @@ export default function ContextList({ refreshKey }: any) {
 
   }
 
+
+  /* ================================
+     DOWNLOAD DOCUMENT
+  ================================ */
 
   const downloadDocument = (id: string) => {
 
@@ -122,9 +162,9 @@ export default function ContextList({ refreshKey }: any) {
       )}
 
 
-      {/* ======================
-         DESKTOP LIST
-      ====================== */}
+      {/* =============================
+         DESKTOP VIEW
+      ============================= */}
 
       <div className="hidden md:block space-y-3">
 
@@ -149,15 +189,24 @@ export default function ContextList({ refreshKey }: any) {
 
             <div className="flex gap-3">
 
-              <ActionButton color="blue" onClick={()=>viewDocument(doc.document_id)}>
+              <ActionButton
+                color="blue"
+                onClick={() => viewDocument(doc.document_id)}
+              >
                 View
               </ActionButton>
 
-              <ActionButton color="green" onClick={()=>downloadDocument(doc.document_id)}>
+              <ActionButton
+                color="green"
+                onClick={() => downloadDocument(doc.document_id)}
+              >
                 Download
               </ActionButton>
 
-              <ActionButton color="red" onClick={()=>deleteDocument(doc.document_id)}>
+              <ActionButton
+                color="red"
+                onClick={() => deleteDocument(doc.document_id)}
+              >
                 Delete
               </ActionButton>
 
@@ -170,13 +219,14 @@ export default function ContextList({ refreshKey }: any) {
       </div>
 
 
-      {/* ======================
-         MOBILE CARDS
-      ====================== */}
+      {/* =============================
+         MOBILE VIEW
+      ============================= */}
 
       <div className="md:hidden space-y-3">
 
-        {documents.map((doc)=>(
+        {documents.map((doc) => (
+
           <div
             key={doc.document_id}
             className="bg-[#111827] p-4 rounded-lg space-y-3"
@@ -200,42 +250,43 @@ export default function ContextList({ refreshKey }: any) {
 
             <div className="flex gap-2 flex-wrap">
 
-              <ActionButton color="blue" onClick={()=>viewDocument(doc.document_id)}>
+              <ActionButton
+                color="blue"
+                onClick={() => viewDocument(doc.document_id)}
+              >
                 View
               </ActionButton>
 
-              <ActionButton color="green" onClick={()=>downloadDocument(doc.document_id)}>
+              <ActionButton
+                color="green"
+                onClick={() => downloadDocument(doc.document_id)}
+              >
                 Download
               </ActionButton>
 
-              <ActionButton color="red" onClick={()=>deleteDocument(doc.document_id)}>
+              <ActionButton
+                color="red"
+                onClick={() => deleteDocument(doc.document_id)}
+              >
                 Delete
               </ActionButton>
 
             </div>
 
           </div>
+
         ))}
 
       </div>
 
 
-      {/* ======================
-         DRAWER
-      ====================== */}
+      {/* =============================
+         DOCUMENT DRAWER
+      ============================= */}
 
       {selectedDoc && (
 
-        <div className="
-          fixed right-0 top-0
-          w-full md:w-[520px]
-          h-full
-          bg-[#070B14]
-          border-l border-white/10
-          p-6 md:p-8
-          overflow-y-auto
-          z-50
-        ">
+        <div className="fixed right-0 top-0 w-full md:w-[520px] h-full bg-[#070B14] border-l border-white/10 p-6 md:p-8 overflow-y-auto z-50">
 
           <div className="flex justify-between items-center mb-6">
 
@@ -244,7 +295,7 @@ export default function ContextList({ refreshKey }: any) {
             </h2>
 
             <button
-              onClick={()=>setSelectedDoc(null)}
+              onClick={() => setSelectedDoc(null)}
               className="text-gray-400 hover:text-white"
             >
               ✕
@@ -252,10 +303,10 @@ export default function ContextList({ refreshKey }: any) {
 
           </div>
 
-
           <div className="space-y-5">
 
-            {selectedDoc.chunks.map((chunk:any)=>(
+            {selectedDoc.chunks.map((chunk) => (
+
               <div
                 key={chunk._id}
                 className="bg-[#111827] border border-white/10 p-4 rounded-lg"
@@ -270,6 +321,7 @@ export default function ContextList({ refreshKey }: any) {
                 </p>
 
               </div>
+
             ))}
 
           </div>
@@ -285,15 +337,27 @@ export default function ContextList({ refreshKey }: any) {
 }
 
 
-function ActionButton({color,onClick,children}:any){
+/* ================================
+   ACTION BUTTON
+================================ */
 
-  const colors={
-    blue:"bg-blue-600 hover:bg-blue-500",
-    green:"bg-green-600 hover:bg-green-500",
-    red:"bg-red-600 hover:bg-red-500"
+function ActionButton({
+  color,
+  onClick,
+  children
+}: {
+  color: ButtonColor
+  onClick: () => void
+  children: React.ReactNode
+}) {
+
+  const colors: Record<ButtonColor, string> = {
+    blue: "bg-blue-600 hover:bg-blue-500",
+    green: "bg-green-600 hover:bg-green-500",
+    red: "bg-red-600 hover:bg-red-500"
   }
 
-  return(
+  return (
 
     <button
       onClick={onClick}
