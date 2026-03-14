@@ -10,11 +10,9 @@ export default function LoginPage() {
 
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-  const [otp, setOtp] = useState("")
-  const [step, setStep] = useState<"login" | "otp">("login")
   const [loading, setLoading] = useState(false)
 
-  const API = "http://localhost:8000"
+  const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"
 
   const handleLogin = async () => {
 
@@ -28,37 +26,11 @@ export default function LoginPage() {
         { withCredentials: true }
       )
 
-      setStep("otp")
-
-    } catch (err) {
-
-      alert("Invalid credentials")
-
-    } finally {
-
-      setLoading(false)
-
-    }
-
-  }
-
-  const handleVerify = async () => {
-
-    try {
-
-      setLoading(true)
-
-      await axios.post(
-        `${API}/admin/verify-otp`,
-        { otp },
-        { withCredentials: true }
-      )
-
       router.push("/dashboard")
 
     } catch (err) {
 
-      alert("Invalid OTP")
+      alert("Invalid credentials")
 
     } finally {
 
@@ -78,57 +50,27 @@ export default function LoginPage() {
           Admin Login
         </h1>
 
-        {step === "login" && (
+        <input
+          className="w-full p-2 rounded bg-gray-800"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
 
-          <>
+        <input
+          className="w-full p-2 rounded bg-gray-800"
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
 
-            <input
-              className="w-full p-2 rounded bg-gray-800"
-              placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-
-            <input
-              className="w-full p-2 rounded bg-gray-800"
-              type="password"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-
-            <button
-              onClick={handleLogin}
-              className="w-full bg-blue-600 p-2 rounded"
-            >
-              {loading ? "Loading..." : "Login"}
-            </button>
-
-          </>
-
-        )}
-
-        {step === "otp" && (
-
-          <>
-
-            <input
-              className="w-full p-2 rounded bg-gray-800"
-              placeholder="Enter OTP"
-              value={otp}
-              onChange={(e) => setOtp(e.target.value)}
-            />
-
-            <button
-              onClick={handleVerify}
-              className="w-full bg-green-600 p-2 rounded"
-            >
-              {loading ? "Verifying..." : "Verify OTP"}
-            </button>
-
-          </>
-
-        )}
+        <button
+          onClick={handleLogin}
+          className="w-full bg-blue-600 p-2 rounded"
+        >
+          {loading ? "Logging in..." : "Login"}
+        </button>
 
       </div>
 

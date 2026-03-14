@@ -29,9 +29,7 @@ OTP_EXPIRES_AT = None
 # =========================
 
 @router.post("/login")
-async def login(data: dict):
-    print("🔐 Admin login attempt:", data.get("email"), data.get("password"))
-    global CURRENT_OTP, OTP_EXPIRES_AT
+async def login(data: dict, response: Response):
 
     email = data.get("email")
     password = data.get("password")
@@ -42,14 +40,21 @@ async def login(data: dict):
     if not verify_password(password, ADMIN_PASSWORD_HASH):
         raise HTTPException(status_code=401, detail="Invalid credentials")
 
-    # Generate OTP
-    CURRENT_OTP = str(random.randint(100000, 999999))
-    OTP_EXPIRES_AT = datetime.utcnow() + timedelta(minutes=5)
+    # create token immediately
+    token = create_access_token({
+        "email": ADMIN_EMAIL,
+        "role": "admin"
+    })
 
-    print("🔐 ADMIN OTP:", CURRENT_OTP)  # For now print in terminal
+    response.set_cookie(
+        key="admin_token",
+        value=token,
+        httponly=True,
+        secure=False,   # change to True in production
+        samesite="lax"
+    )
 
-    return {"message": "OTP sent to email (check backend terminal)"}
-
+    return {"message": "Login successful"}
 
 # =========================
 # STEP 2: VERIFY OTP
