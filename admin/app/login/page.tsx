@@ -16,6 +16,8 @@ export default function LoginPage() {
 
   const handleLogin = async () => {
 
+    console.log("API login", API)
+
     try {
 
       setLoading(true)
