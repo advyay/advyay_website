@@ -314,17 +314,24 @@ function EditableField({label,value,editMode,onChange}:any){
 }
 
 
-function StatusBadge({status}:any){
+type LeadStatus = "new" | "converted" | "archived" | "pending"
 
-  const colors={
-    new:"bg-blue-500/20 text-blue-400",
-    converted:"bg-green-500/20 text-green-400"
+function StatusBadge({ status }: { status: LeadStatus | string }) {
+
+  const colors: Record<LeadStatus, string> = {
+    new: "bg-blue-500/20 text-blue-400",
+    converted: "bg-green-500/20 text-green-400",
+    archived: "bg-gray-600/20 text-gray-400",
+    pending: "bg-yellow-500/20 text-yellow-400"
   }
 
-  return(
-    <span className={`px-2 py-1 rounded text-xs ${colors[status] || "bg-gray-600/20 text-gray-400"}`}>
+  const style =
+    colors[status as LeadStatus] ||
+    "bg-gray-600/20 text-gray-400"
+
+  return (
+    <span className={`px-2 py-1 rounded text-xs ${style}`}>
       {status}
     </span>
   )
-
 }
