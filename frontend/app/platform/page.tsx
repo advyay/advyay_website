@@ -1,201 +1,63 @@
-'use client'
+import type { Metadata } from "next";
+import { buildMetadata } from "@/lib/seo";
+import { Container } from "@/components/primitives/Container";
+import { SectionHeader } from "@/components/primitives/SectionHeader";
+import { CTA } from "@/components/sections/CTA";
+import { Button } from "@/components/primitives/Button";
 
-import { motion } from 'framer-motion'
-import Link from 'next/link'
+export const metadata: Metadata = buildMetadata({
+  title: "The Advyay Platform",
+  description:
+    "Runtime, memory, eval, observability, governance — the operating layer underneath every Advyay agent and your own.",
+  path: "/platform"
+});
 
-export default function Platform() {
+const PILLARS = [
+  { title: "Runtime",       body: "Deterministic agent loop, retry, state management, streaming, timeouts, idempotency." },
+  { title: "Memory Plane",  body: "Per-tenant structured memory with retention policy, scrubbing, and region pinning." },
+  { title: "Tool Plane",    body: "Versioned, audited, rate-limited tool calls over your internal APIs — never raw model output." },
+  { title: "Eval",          body: "Production eval and regression suite with golden transcripts and policy checks." },
+  { title: "Observability", body: "Trace every run. Replay every decision. Export to your SIEM and data lake." },
+  { title: "Governance",    body: "SSO, RBAC, ABAC, region pinning, audit ledger, DPA, BAA, and policy-as-code." }
+];
+
+export default function PlatformPage() {
   return (
-    <section className="py-32 bg-[#070B14] border-t border-white/5">
-      <div className="max-w-7xl mx-auto px-6 space-y-28">
-
-        {/* ================= HERO ================= */}
-        <div className="max-w-4xl">
-          <p className="uppercase tracking-[0.3em] text-xs text-blue-400 mb-6">
-            PRODUCT PLATFORM
-          </p>
-
-          <h1 className="text-5xl md:text-6xl font-bold mb-8 leading-tight">
-            ANVAY — Agentic AI CRM
+    <>
+      <section className="pt-32 md:pt-40 pb-16">
+        <Container>
+          <p className="eyebrow">THE ADVYAY PLATFORM</p>
+          <h1 className="display-heading mt-6 text-[2.5rem] sm:text-h1 md:text-display text-paper-50 max-w-4xl">
+            One operating layer for every agent you ship.
           </h1>
-
-          <p className="text-xl text-gray-400 leading-relaxed">
-            ANVAY is a production-grade agentic CRM designed to automate
-            inbound lead qualification, outbound follow-ups, voice communication,
-            negotiation workflows, and revenue intelligence — all within a
-            governed enterprise framework.
+          <p className="mt-8 max-w-2xl text-body-lg text-paper-200">
+            The same platform that powers Anvay and our customer-deployed agents is available to you — build, ship, and govern your own.
           </p>
-
-          <div className="flex gap-6 mt-10">
-            <Link
-              href="/contact"
-              className="bg-gradient-to-r from-blue-600 to-purple-600 px-8 py-4 rounded-xl font-semibold"
-            >
-              Request Platform Demo
-            </Link>
-
-            {/* <Link
-              href="/solutions"
-              className="border border-white/20 px-8 py-4 rounded-xl hover:bg-white/10 transition"
-            >
-              See Use Cases
-            </Link> */}
+          <div className="mt-8 flex gap-3">
+            <Button href="/contact" variant="primary" size="lg">Get platform access</Button>
+            <Button href="/docs" variant="secondary" size="lg" external>Read the docs</Button>
           </div>
-        </div>
+        </Container>
+      </section>
 
-        {/* ================= WHO IT IS FOR ================= */}
-        <div className="grid md:grid-cols-2 gap-16 items-center">
-          <div>
-            <h2 className="text-3xl font-semibold mb-6">
-              Built for Revenue-Driven Teams
-            </h2>
+      <div className="section-divider" />
 
-            <p className="text-gray-400 leading-relaxed mb-6">
-              ANVAY is purpose-built for organizations where speed,
-              responsiveness, and structured follow-up directly impact revenue.
-            </p>
+      <section className="section">
+        <Container>
+          <SectionHeader eyebrow="PLATFORM PILLARS" title="Built like infrastructure. Operated like a product." />
+          <ul className="mt-12 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {PILLARS.map((p, i) => (
+              <li key={p.title} className="card p-6">
+                <span className="font-mono text-micro text-paper-300">{String(i + 1).padStart(2, "0")}</span>
+                <h3 className="mt-3 text-h5 text-paper-50">{p.title}</h3>
+                <p className="mt-3 text-body-sm text-paper-200">{p.body}</p>
+              </li>
+            ))}
+          </ul>
+        </Container>
+      </section>
 
-            <ul className="space-y-4 text-gray-400">
-              <li>• Real estate brokerages</li>
-              <li>• High-ticket sales organizations</li>
-              <li>• Financial services & lending teams</li>
-              <li>• Enterprise B2B sales teams</li>
-            </ul>
-          </div>
-
-          <div className="bg-[#0B1220] border border-white/10 rounded-2xl p-8">
-            <h3 className="text-xl font-semibold mb-4 text-white">
-              What It Replaces
-            </h3>
-
-            <ul className="space-y-3 text-gray-400">
-              <li>Manual lead qualification calls</li>
-              <li>Delayed CRM updates</li>
-              <li>Unstructured negotiation tracking</li>
-              <li>Missed follow-ups</li>
-              <li>Disconnected sales analytics</li>
-            </ul>
-          </div>
-        </div>
-
-        {/* ================= CORE CAPABILITIES ================= */}
-        <div>
-          <h2 className="text-3xl font-semibold mb-14">
-            Core Capabilities
-          </h2>
-
-          <div className="grid md:grid-cols-3 gap-10">
-
-            <motion.div
-              whileHover={{ y: -5 }}
-              className="bg-[#0B1220] border border-white/10 rounded-2xl p-8"
-            >
-              <h3 className="text-lg font-semibold text-white mb-4">
-                AI Voice Agents
-              </h3>
-              <p className="text-gray-400 text-sm leading-relaxed">
-                Context-aware voice agents that qualify leads,
-                book meetings, reschedule appointments, and update CRM
-                automatically in real-time.
-              </p>
-            </motion.div>
-
-            <motion.div
-              whileHover={{ y: -5 }}
-              className="bg-[#0B1220] border border-white/10 rounded-2xl p-8"
-            >
-              <h3 className="text-lg font-semibold text-white mb-4">
-                Structured Negotiation Workflows
-              </h3>
-              <p className="text-gray-400 text-sm leading-relaxed">
-                Track offers, counteroffers, pricing adjustments,
-                and escalation rules inside a governed agentic workflow engine.
-              </p>
-            </motion.div>
-
-            <motion.div
-              whileHover={{ y: -5 }}
-              className="bg-[#0B1220] border border-white/10 rounded-2xl p-8"
-            >
-              <h3 className="text-lg font-semibold text-white mb-4">
-                Revenue Intelligence Dashboard
-              </h3>
-              <p className="text-gray-400 text-sm leading-relaxed">
-                Monitor conversion rates, response latency,
-                call outcomes, and operational efficiency — in one unified layer.
-              </p>
-            </motion.div>
-
-          </div>
-        </div>
-
-        {/* ================= ARCHITECTURE ================= */}
-        <div className="grid md:grid-cols-2 gap-16 items-center">
-          <div>
-            <h2 className="text-3xl font-semibold mb-6">
-              Enterprise Architecture
-            </h2>
-
-            <p className="text-gray-400 leading-relaxed mb-6">
-              ANVAY integrates directly into your operational stack —
-              without replacing existing systems.
-            </p>
-
-            <ul className="space-y-4 text-gray-400">
-              <li>• CRM integrations (Salesforce, HubSpot, Custom)</li>
-              <li>• Telephony & call APIs</li>
-              <li>• ERP systems</li>
-              <li>• Internal databases</li>
-              <li>• Structured audit & logging layer</li>
-            </ul>
-          </div>
-
-          <div className="bg-[#0B1220] border border-white/10 rounded-2xl p-8">
-            <h3 className="text-xl font-semibold text-white mb-4">
-              Governance & Control
-            </h3>
-
-            <p className="text-gray-400 text-sm leading-relaxed">
-              Every agent action is logged.  
-              Human override mechanisms are built-in.  
-              Compliance monitoring is continuous.  
-              No black-box automation.
-            </p>
-          </div>
-        </div>
-
-        {/* ================= METRICS ================= */}
-        <div className="grid md:grid-cols-3 gap-8 text-center">
-
-          <div className="bg-[#0B1220] border border-white/10 rounded-xl p-8">
-            <h4 className="text-4xl font-bold text-white mb-2">
-              2–4 Weeks
-            </h4>
-            <p className="text-gray-400">
-              Typical implementation timeline
-            </p>
-          </div>
-
-          <div className="bg-[#0B1220] border border-white/10 rounded-xl p-8">
-            <h4 className="text-4xl font-bold text-white mb-2">
-              30–50%
-            </h4>
-            <p className="text-gray-400">
-              Reduction in manual call workload
-            </p>
-          </div>
-
-          <div className="bg-[#0B1220] border border-white/10 rounded-xl p-8">
-            <h4 className="text-4xl font-bold text-white mb-2">
-              24/7
-            </h4>
-            <p className="text-gray-400">
-              Continuous lead engagement
-            </p>
-          </div>
-
-        </div>
-
-      </div>
-    </section>
-  )
+      <CTA />
+    </>
+  );
 }

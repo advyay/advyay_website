@@ -1,42 +1,28 @@
-import Hero from '../components/Hero'
-import ProblemSection from '../components/ProblemSection'
-import ServicesSection from '../components/ServicesSection'
-import EnterpriseCredibilitySection from '../components/EnterpriseCredibilitySection'
-import SolutionsArchitectureSection from '../components/SolutionsArchitectureSection'
-import EnterpriseExecutionSection from '../components/EnterpriseExecutionSection'
+import type { Metadata } from "next";
+import { Hero } from "@/components/sections/Hero";
+import { ProofBar } from "@/components/sections/ProofBar";
+import { Capabilities } from "@/components/sections/Capabilities";
+import { HowItWorks } from "@/components/sections/HowItWorks";
+import { Trust } from "@/components/sections/Trust";
+import { CTA } from "@/components/sections/CTA";
+import { buildMetadata } from "@/lib/seo";
+
+export const metadata: Metadata = buildMetadata({
+  title: "Autonomous AI for the operating layer of business",
+  description:
+    "Advyay designs and deploys production-grade Agentic AI — autonomous agents, multi-agent systems, and AI infrastructure for enterprise operations across revenue, support, finance, and IT.",
+  path: "/"
+});
 
 export default function HomePage() {
   return (
-    <main className="bg-[#070B14] text-white overflow-x-hidden">
-
-      {/* HERO */}
+    <>
       <Hero />
-
-      {/* ARCHITECTURE OVERVIEW */}
-      <div className="border-t border-white/5">
-        <SolutionsArchitectureSection />
-      </div>
-
-      {/* IMPLEMENTATION FRAMEWORK */}
-      <div className="border-t border-white/5">
-        <EnterpriseExecutionSection />
-      </div>
-
-      {/* PROBLEM WE SOLVE */}
-      {/* <div className="border-t border-white/5">
-        <ProblemSection />
-      </div> */}
-
-      {/* SERVICES / OFFERINGS */}
-      {/* <div className="border-t border-white/5">
-        <ServicesSection />
-      </div> */}
-
-      {/* ENTERPRISE TRUST & CREDIBILITY */}
-      <div className="border-t border-white/5">
-        <EnterpriseCredibilitySection />
-      </div>
-
-    </main>
-  )
+      <ProofBar />
+      <Capabilities />
+      <HowItWorks />
+      <Trust />
+      <CTA />
+    </>
+  );
 }
