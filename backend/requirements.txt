@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+python-multipart
+bcrypt
+motor
+pyjwt
+python-dotenv
+openai
+pydantic-settings
+numpy
+#uvicorn app.main:app --reload --port 8000

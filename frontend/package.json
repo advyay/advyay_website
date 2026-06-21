@@ -1,0 +1,33 @@
+{
+  "name": "advyayai-web",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Advyay Solutions — public marketing & product website",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit",
+    "audit:a11y": "node scripts/axe-audit.mjs",
+    "audit:perf": "node scripts/lighthouse.mjs"
+  },
+  "dependencies": {
+    "next": "14.2.15",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "framer-motion": "11.11.9"
+  },
+  "devDependencies": {
+    "@types/node": "20.14.10",
+    "@types/react": "18.3.3",
+    "@types/react-dom": "18.3.0",
+    "typescript": "5.5.3",
+    "tailwindcss": "3.4.13",
+    "postcss": "8.4.47",
+    "autoprefixer": "10.4.20",
+    "eslint": "8.57.0",
+    "eslint-config-next": "14.2.15",
+    "prettier": "3.3.3"
+  }
+}
