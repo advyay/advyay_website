@@ -11,7 +11,7 @@ export function Logo({ className = "", size = "md" }: { className?: string; size
   return (
     <Link
       href="/"
-      className={`group inline-flex items-center gap-2.5 ${className}`}
+      className={`group inline-flex items-center gap-2.5 ${className} group-hover:scale-105 transition-transform duration-300`}
       aria-label={`${SITE.shortName} home`}
     >
       <Mark size={dims.mark} />

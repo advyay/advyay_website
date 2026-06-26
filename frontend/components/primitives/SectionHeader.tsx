@@ -19,7 +19,7 @@ export function SectionHeader({
   return (
     <header className={`max-w-3xl ${alignCls} ${className}`}>
       <p className="eyebrow">{eyebrow}</p>
-      <h2 className="mt-4 display-heading text-h2 md:text-[3rem] text-paper-50">{title}</h2>
+      <h2 className="mt-4 display-heading text-h2 md:text-[3rem] text-paper-50 relative after-[content:''] after:absolute after:-bottom-0.5 after:left-0 after:h-px after:w-0 after:bg-accent after:transition-width after:hover:w-full after:duration-300">{title}</h2>
       {description ? (
         <p className="mt-5 text-body-lg text-paper-200">{description}</p>
       ) : null}
