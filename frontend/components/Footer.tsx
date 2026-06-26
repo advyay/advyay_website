@@ -39,7 +39,7 @@ function NavColumn({ title, items }: { title: string; items: readonly string[] }
           <li key={label}>
             <Link
               href={HREFS[label] ?? "/"}
-              className="text-body-sm text-paper-200 hover:text-paper-50 transition-colors"
+              className="relative after-[content:''] after:absolute after:-bottom-0.5 after:left-0 after:h-px after:w-0 after:bg-accent after:transition-width after:hover:w-full after:duration-300 text-body-sm text-paper-200 hover:text-paper-50 transition-colors"
             >
               {label}
             </Link>
