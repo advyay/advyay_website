@@ -106,9 +106,16 @@
     @apply py-24 md:py-32 lg:py-40 bg-ink-800/10;
   }
 
+  @keyframes gradient-shift {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 200% 50%; }
+  }
+
   .section-divider {
     height: 1px;
     background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
+    background-size: 200% 100%;
+    animation: gradient-shift 8s ease infinite;
   }
 
   /* Typography primitives */
