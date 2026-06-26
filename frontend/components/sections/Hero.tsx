@@ -18,7 +18,7 @@ export function Hero() {
             <span className="block">
               <span className="relative inline-block">
                 <span className="absolute inset-x-0 -bottom-1 h-px bg-gradient-to-r from-accent via-signal to-transparent opacity-60" />
-                <span className="bg-gradient-to-r from-paper-50 via-paper-50 to-paper-300 bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-paper-50 via-paper-50 to-paper-300 bg-clip-text text-transparent animate-shimmer">
                   {hero.title[2]}
                 </span>
               </span>
