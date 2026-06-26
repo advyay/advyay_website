@@ -105,14 +105,12 @@ export function Navbar() {
               const active = isActive(pathname, item2.href);
               return (
                 <li key={item2.href}>
-                  <Link
-                    href={item2.href}
-                    className={`px-3 py-2 text-body-sm rounded-md transition-colors ${
-                      active ? "text-paper-50" : "text-paper-200 hover:text-paper-50"
-                    }`}
-                  >
-                    {item2.label}
-                  </Link>
+<Link
+                href={item2.href}
+                className={`relative px-3 py-2 text-body-sm rounded-md transition-colors after-[content:''] after:absolute after:-bottom-0.5 after:left-0 after:h-px after:w-0 after:bg-accent after:transition-width after:hover:w-full after:duration-300 ${active ? "text-paper-50" : "text-paper-200 hover:text-paper-50"}`}
+              >
+                {item2.label}
+              </Link>
                 </li>
               );
             })}
