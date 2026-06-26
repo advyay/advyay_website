@@ -66,7 +66,7 @@ export default function SolutionPage({ params }: { params: Params }) {
             description="We pair with your operators for a 6-week pilot scoped to one workflow, with a fixed eval rubric and weekly ROI reviews."
           />
         </Container>
-      </div>
+      </section>
       <CTA />
     </>
   );
