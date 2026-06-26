@@ -131,11 +131,13 @@
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-card);
     transition: border-color 200ms cubic-bezier(0.2,0.8,0.2,1),
-                transform  400ms cubic-bezier(0.2,0.8,0.2,1);
+                transform  400ms cubic-bezier(0.2,0.8,0.2,1),
+                box-shadow 200ms ease;
   }
   .card:hover {
     border-color: rgba(124,255,107,0.25);
-    transform: translateY(-2px);
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: var(--shadow-card), var(--shadow-glow);
   }
 
   /* Buttons */
