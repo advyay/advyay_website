@@ -6,8 +6,8 @@ export function CTA() {
   return (
     <section className="section" aria-labelledby="cta-title">
       <div className="container-app">
-        <div className="card relative overflow-hidden p-10 md:p-16 lg:p-20">
-          <div className="absolute inset-0 glow-accent opacity-50" aria-hidden="true" />
+        <div className="card relative overflow-hidden p-10 md:p-16 lg:p-20 hover:-translate-y-2 transition-transform duration-300">
+          <div className="absolute inset-0 glow-accent opacity-50 hover:opacity-70 transition-opacity duration-300" aria-hidden="true" />
           <div className="relative z-[1] max-w-3xl">
             <h2 id="cta-title" className="display-heading text-h1 md:text-display text-paper-50">
               {cta.title}
