@@ -10,7 +10,7 @@ export function ProofBar() {
           {companies.map((c) => (
             <li
               key={c}
-              className="text-center text-paper-300 text-body-sm font-display tracking-tighter opacity-80 hover:opacity-100 transition-opacity"
+              className="flex items-center justify-center text-center text-paper-300 text-body-sm font-display tracking-tighter opacity-80 hover:opacity-100 hover:scale-105 transition-transform duration-200 hover:bg-ink-700/20 hover:rounded-lg"
             >
               {c}
             </li>
